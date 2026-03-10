@@ -1,10 +1,8 @@
 <div align="center">
 
-# 🌿 EchoRoots
+# 🌿 EchoRoots: Echoing Ancestral Voices Into The Digita Future
 
 ### *Preserving the Oral Heritage of Southeast Asian Orang Asli Communities*
-
-**Built for Borneo HackWKND 2026**
 
 ---
 
@@ -527,6 +525,6 @@ EchoRoots was built with deep respect for the **Semai**, **Temiar**, and **Jakun
 
 *"Every word, every whispered story, every cultural tradition deserves to echo through time."*
 
-**EchoRoots · Borneo HackWKND 2026**
+**🌿EchoRoots: Echoing Ancestral Voices Into The Digita Future**
 
 </div>
