@@ -4,6 +4,10 @@ import { BookOpen, ChevronRight, Globe, Calendar } from 'lucide-react'
 export default function StoryCard({ story, onClick }) {
     const { title, language, scenes, createdAt, sceneCount } = story
     const firstScene = scenes?.[0]
+    const coverSrc = firstScene?.imageUrl
+        || (firstScene?.imageBase64
+            ? `data:${firstScene.imageMimeType || 'image/png'};base64,${firstScene.imageBase64}`
+            : null)
     const count = sceneCount || scenes?.length || 0
     const date = createdAt
         ? new Date(createdAt).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -42,10 +46,10 @@ export default function StoryCard({ story, onClick }) {
                 background: 'rgba(8, 20, 12, 0.95)',
                 flexShrink: 0,
             }}>
-                {firstScene?.imageBase64 ? (
+                {coverSrc ? (
                     <>
                         <img
-                            src={`data:${firstScene.imageMimeType || 'image/png'};base64,${firstScene.imageBase64}`}
+                            src={coverSrc}
                             alt={title || 'Story'}
                             style={{
                                 width: '100%', height: '100%', objectFit: 'cover', display: 'block',
