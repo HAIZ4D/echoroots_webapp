@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
+import { getFunctions } from 'firebase/functions'
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
@@ -13,13 +14,10 @@ const firebaseConfig = {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig)
 
-// Initialize Firestore
 export const db = getFirestore(app)
-
-// Initialize Storage
 export const storage = getStorage(app)
+export const functions = getFunctions(app, 'us-central1')
 
 export default app

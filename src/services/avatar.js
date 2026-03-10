@@ -2,6 +2,8 @@
  * TalkingHead.js wrapper service.
  * Handles avatar initialization, speech (with ElevenLabs lip-sync), and animation control.
  */
+import { httpsCallable } from 'firebase/functions'
+import { functions } from './firebase'
 
 let talkingHeadInstance = null
 let idleEnabled = false
@@ -377,71 +379,44 @@ export async function speak(talkingHead, text) {
         return
     }
 
-    const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY
-    const voiceId = import.meta.env.VITE_ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB'
-
-    // ElevenLabs /with-timestamps has a ~2500-char per-request limit.
-    // Long RAG answers (500–2000+ chars) can exceed this → 422 → fallback to browser TTS → no lip sync.
-    // Truncate at the last sentence boundary before the limit.
+    // Truncate at last sentence boundary before the ElevenLabs per-request limit
     const ELEVENLABS_CHAR_LIMIT = 900
     let speakText = text
     if (speakText.length > ELEVENLABS_CHAR_LIMIT) {
-        // Find last sentence-ending punctuation before the limit
         const slice = speakText.slice(0, ELEVENLABS_CHAR_LIMIT)
         const lastBreak = Math.max(slice.lastIndexOf('. '), slice.lastIndexOf('! '), slice.lastIndexOf('? '), slice.lastIndexOf('.\n'))
         speakText = lastBreak > 100 ? slice.slice(0, lastBreak + 1) : slice
     }
 
-    if (apiKey) {
-        try {
-            const res = await fetch(
-                `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/with-timestamps`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'xi-api-key': apiKey,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        text: speakText,
-                        model_id: 'eleven_multilingual_v2',
-                        voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-                    }),
-                }
-            )
-            if (!res.ok) throw new Error(`ElevenLabs ${res.status}`)
+    try {
+        // Call Cloud Function — ElevenLabs key stays hidden server-side
+        const fn = httpsCallable(functions, 'speakWithTimestamps', { timeout: 30000 })
+        const { data } = await fn({ text: speakText })
 
-            const data = await res.json()
+        if (!data.audioBase64) throw new Error('No audio returned from function')
 
-            // Decode base64 MP3 → AudioBuffer via TalkingHead's AudioContext
-            const bytes = Uint8Array.from(atob(data.audio_base64), c => c.charCodeAt(0))
-            const audioBuffer = await head.audioCtx.decodeAudioData(bytes.buffer)
+        // Decode base64 MP3 → AudioBuffer via TalkingHead's AudioContext
+        const bytes = Uint8Array.from(atob(data.audioBase64), c => c.charCodeAt(0))
+        const audioBuffer = await head.audioCtx.decodeAudioData(bytes.buffer.slice(0))
 
-            // Build word timing from character alignment for lip-sync
-            let words = [], wtimes = [], wdurations = []
-            if (data.alignment?.characters) {
-                ;({ words, wtimes, wdurations } = charAlignmentToWords(
-                    data.alignment.characters,
-                    data.alignment.character_start_times_seconds,
-                    data.alignment.character_end_times_seconds
-                ))
-            }
-
-            // Second safety net: ensure AudioContext is running before handing audio
-            // to TalkingHead's playAudio(). TalkingHead's own resume() only has a 1s
-            // timeout and silently skips audio if it fails — we avoid that here.
-            if (head.audioCtx?.state !== 'running') {
-                try { await head.audioCtx.resume() } catch { /* gesture may be stale */ }
-            }
-
-            // Drive avatar speech with reliable 3-layer completion detection.
-            // isRaw: true (inside speakWithTalkingHead) skips TalkingHead's
-            // lookAtCamera() + speakWithHands() so the head stays steady.
-            await speakWithTalkingHead(head, audioBuffer, words, wtimes, wdurations)
-            return
-        } catch (err) {
-            console.warn('ElevenLabs speak failed, using browser TTS:', err.message)
+        // Build word timing from character alignment for lip-sync
+        let words = [], wtimes = [], wdurations = []
+        if (data.alignment?.characters) {
+            ;({ words, wtimes, wdurations } = charAlignmentToWords(
+                data.alignment.characters,
+                data.alignment.character_start_times_seconds,
+                data.alignment.character_end_times_seconds
+            ))
         }
+
+        if (head.audioCtx?.state !== 'running') {
+            try { await head.audioCtx.resume() } catch { /* gesture may be stale */ }
+        }
+
+        await speakWithTalkingHead(head, audioBuffer, words, wtimes, wdurations)
+        return
+    } catch (err) {
+        console.warn('ElevenLabs speak failed, using browser TTS:', err.message)
     }
 
     // Fallback: browser SpeechSynthesis (no avatar lip-sync, but at least audible)

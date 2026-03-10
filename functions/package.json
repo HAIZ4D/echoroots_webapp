@@ -1,0 +1,16 @@
+{
+  "name": "echoroots-functions",
+  "description": "Firebase Cloud Functions — proxy layer for Gemini and ElevenLabs APIs",
+  "scripts": {
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": { "node": "20" },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.0.0",
+    "@google/generative-ai": "^0.24.1"
+  },
+  "private": true
+}

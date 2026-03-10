@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌿 EchoRoots: Echoing Ancestral Voices Into The Digita Future
+# 🌿 EchoRoots: Echoing Ancestral Voices Into The Digital Future
 
 ### *Preserving the Oral Heritage of Southeast Asian Orang Asli Communities*
 
@@ -26,7 +26,7 @@ EchoRoots bridges that gap with three AI-powered tools:
 
 | Feature | What It Does |
 |---|---|
-| 🎙 **StoryWeaver** | Record spoken folktales and transform them into illustrated, bilingual digital storybooks |
+| 🎙 **StoryWeaver** | Record spoken folktales and transform them into illustrated, trilingual digital storybooks |
 | 🧙 **Digital Elder** | A RAG-powered AI guardian that answers cultural questions using a verified indigenous knowledge base |
 | 🗣 **Pronunciation Lab** | Practice endangered words with AI phonetic coaching and real-time accuracy scoring |
 
@@ -42,75 +42,52 @@ flowchart TD
 
     User -->|visits| Hosting
 
-    subgraph Hosting["☁️ Hosting — Firebase Hosting"]
-        App["EchoRoots Web App"]
-    end
-
-    App --> SW & DE & PL
-
-    subgraph Features["⚡ Features"]
-        SW["🎙 StoryWeaver\nOral story recording\n& storybook generation"]
-        DE["🧙 Digital Elder\nRAG cultural chatbot\n& 3D avatar"]
-        PL["🗣 Pronunciation Lab\nAI phonetic coaching\n& accuracy scoring"]
-    end
-
-    subgraph Frontend["🖥️ Frontend Layer"]
-        direction LR
-        React["React 19\n+ Vite 7"]
-        Router["React Router DOM 7\nClient-side routing"]
-        State["Zustand 5\nGlobal state"]
-        Anim["Framer Motion 12\nAnimations & transitions"]
-        Style["Tailwind CSS 4\nDark theme UI"]
-    end
-
-    subgraph BrowserAPIs["🌐 Browser APIs (no cost)"]
-        WAA["Web Audio API\nWaveform + RMS detection"]
-        SR["SpeechRecognition API\nPronunciation capture"]
-        WebGL["WebGL / Three.js\n3D avatar rendering"]
-    end
-
-    subgraph AILayer["🤖 AI / ML Layer"]
-        direction TB
-        Gemini["Google Gemini 2.0 Flash\n─────────────────────\n• Audio transcription\n• Language detection\n• EN + BM translation\n• Scene splitting\n• Cultural annotation\n• RAG response generation\n• Pronunciation scoring"]
-        GeminiImg["Gemini Image Gen\n(Experimental)\n─────────────\n• Scene illustrations\n• Watercolor art style"]
-        EL["ElevenLabs\n─────────────\n• TTS narration (REST)\n• Avatar lip-sync\n  (WebSocket stream)"]
-        TH["TalkingHead.js\n─────────────\n• 3D GLB avatar\n• Mixamo FBX anims\n• Real-time IK"]
-    end
-
-    subgraph Firebase["🔥 Firebase Platform"]
-        Firestore[("Firestore DB\n──────────\nknowledge_base\nstories\nvocabulary")]
+    subgraph Firebase["🔥 Firebase Platform (echoroots-e0420)"]
+        Hosting["Firebase Hosting\n(Static React App)"]
+        Functions["☁️ Firebase Cloud Functions\nNode.js 20 — API Proxy Layer\n─────────────────────────\ntranscribeAudio · translateText\nsplitScenes · generateIllustration\nevaluatePronunciation · generateRAGResponse\ntranslateVocabulary · textToSpeech\nspeakWithTimestamps"]
+        Firestore[("Firestore DB\n──────────\nknowledge_base\nstories")]
         Storage[("Firebase Storage\n──────────\nStory illustrations")]
     end
 
-    subgraph Dataset["📚 Dataset / Knowledge Base"]
-        KB["seedKnowledge.json\n30 curated Orang Asli\ncultural knowledge entries"]
-        Vocab["Indigenous Vocabulary\nSemai · Temiar · Jakun\nwords, phrases & phonetics"]
-        RAG["RAG Pipeline\nKeyword search\n→ Gemini synthesis"]
+    Hosting --> App
+
+    subgraph Browser["🖥️ Browser"]
+        App["EchoRoots React App"]
+        App --> SW & DE & PL
+
+        subgraph Features["⚡ Features"]
+            SW["🎙 StoryWeaver"]
+            DE["🧙 Digital Elder"]
+            PL["🗣 Pronunciation Lab"]
+        end
+
+        subgraph BrowserAPIs["🌐 Browser APIs"]
+            WAA["Web Audio API\nWaveform + RMS"]
+            SR["SpeechRecognition API\nPronunciation capture"]
+            WebGL["WebGL + Three.js\n3D Avatar rendering"]
+        end
     end
 
-    SW -->|"audio blob"| Gemini
-    SW -->|"image prompt"| GeminiImg
-    SW -->|"scene text"| EL
+    subgraph ExternalAPIs["☁️ External AI APIs"]
+        Gemini["Google Gemini 2.0 Flash\n• Audio transcription\n• Translation EN + BM\n• Scene splitting\n• Image generation\n• RAG responses\n• Pronunciation scoring"]
+        EL["ElevenLabs\n• TTS narration\n• Avatar lip-sync\n  with timestamps"]
+    end
+
+    SW -->|"audio blob (base64)"| Functions
     SW -->|"save story"| Firestore
     SW -->|"save images"| Storage
-
-    DE -->|"user question"| RAG
-    RAG -->|"retrieve context"| Firestore
-    RAG -->|"synthesise answer"| Gemini
-    DE -->|"speak response"| EL
-    EL -->|"phoneme stream"| TH
+    DE -->|"user question"| Functions
+    DE -->|"retrieve context"| Firestore
     DE --> WebGL
-
-    PL -->|"evaluate audio"| Gemini
+    PL -->|"audio blob (base64)"| Functions
     PL --> SR
-    PL --> WAA
+    SW & PL --> WAA
 
-    KB -->|"seeded via\nawait window.seedDB()"| Firestore
-    Vocab --> PL
-
-    Features --> Frontend
-    Frontend --> BrowserAPIs
+    Functions -->|"GEMINI_API_KEY\n(hidden server-side)"| Gemini
+    Functions -->|"ELEVENLABS_API_KEY\n(hidden server-side)"| EL
 ```
+
+> **Security design:** The browser never touches Gemini or ElevenLabs directly. All AI calls are proxied through Firebase Cloud Functions where API keys are stored in Google Secret Manager — invisible to anyone inspecting browser DevTools.
 
 ---
 
@@ -128,29 +105,47 @@ flowchart TD
 | Zustand | 5 | Global state management |
 | Lucide React | latest | Icon library |
 
+#### ☁️ Backend — Firebase Cloud Functions
+
+| Function | Purpose |
+|---|---|
+| `transcribeAudio` | Receives base64 audio, calls Gemini multimodal, returns verbatim transcription + language |
+| `translateText` | Translates indigenous text to English and Bahasa Melayu simultaneously |
+| `splitScenes` | Divides story into narrative scenes with per-scene translations and image prompts |
+| `generateIllustration` | Generates watercolor scene artwork via Gemini Image Gen (3-provider fallback chain) |
+| `evaluatePronunciation` | Scores pronunciation attempt 0–100 with phonetic coaching tips |
+| `generateRAGResponse` | Synthesises culturally grounded answers from retrieved Firestore knowledge entries |
+| `translateVocabulary` | Handles direct vocabulary translation questions (e.g., "What is eat in Semai?") |
+| `textToSpeech` | ElevenLabs REST TTS for story narration — returns base64 audio |
+| `speakWithTimestamps` | ElevenLabs TTS with character-level alignment for 3D avatar lip-sync |
+
 #### 🤖 AI / ML
 
 | Service | Model | Purpose |
 |---|---|---|
-| Google Gemini | gemini-2.0-flash | Transcription, translation, scene splitting, RAG responses, pronunciation evaluation |
-| Google Gemini | gemini-2.0-flash-exp-image-generation | Scene illustration generation |
-| ElevenLabs | REST + WebSocket | TTS narration and real-time avatar lip-sync |
-| TalkingHead.js | — | 3D avatar animation with IK and Mixamo rigs |
+| Google Gemini | `gemini-2.0-flash` | Transcription, translation, scene splitting, RAG responses, pronunciation evaluation |
+| Google Gemini | `gemini-2.0-flash-exp-image-generation` | Scene illustration generation (free tier) |
+| Google Gemini | `imagen-4.0-fast-generate-001` | Illustration fallback provider 2 (Blaze plan) |
+| Google Gemini | `imagen-4.0-generate-001` | Illustration fallback provider 3 (Blaze plan) |
+| ElevenLabs | `eleven_multilingual_v2` | TTS narration and avatar lip-sync with word-level timestamps |
+| TalkingHead.js | — | 3D avatar animation with IK rig and real-time lip-sync |
 
 #### 🔥 Firebase Platform
 
 | Service | Purpose |
 |---|---|
-| Firebase Hosting | Static site deployment |
-| Firestore | Knowledge base (RAG), story archive, vocabulary |
-| Firebase Storage | Story scene illustration images |
+| Firebase Hosting | Static site deployment (React build output) |
+| Firebase Cloud Functions | Node.js 20 serverless API proxy — keeps AI keys hidden |
+| Firestore | Knowledge base (RAG), story archive |
+| Firebase Storage | Persistent story scene illustration images |
+| Secret Manager | Secure storage for `GEMINI_API_KEY` and `ELEVENLABS_API_KEY` |
 
 #### 🌐 Browser APIs
 
 | API | Purpose |
 |---|---|
-| Web Audio API + AnalyserNode | Real-time waveform visualization, RMS speech detection |
-| SpeechRecognition API | Pronunciation Lab audio capture |
+| Web Audio API + AnalyserNode | Real-time waveform visualization, RMS amplitude-based speech detection |
+| SpeechRecognition API | Browser-native speech capture for Pronunciation Lab |
 | WebGL / Three.js | 3D Digital Elder avatar rendering |
 
 #### 📚 Dataset
@@ -161,8 +156,6 @@ flowchart TD
 | `src/pages/PronunciationLab.jsx` | 10 indigenous phrases with phonetic guides | Pronunciation Lab |
 | Firestore `vocabulary` collection | Indigenous word entries with meanings and cultural context | Future vocabulary expansion |
 
-> **No backend server.** All API calls are made directly from the browser using Vite environment variables (`import.meta.env`). This is intentional for the hackathon prototype.
-
 ---
 
 ## 🚀 Setup Instructions
@@ -170,8 +163,9 @@ flowchart TD
 ### Prerequisites
 
 - Node.js 18+ and npm
+- [Firebase CLI](https://firebase.google.com/docs/cli) — `npm install -g firebase-tools`
 - A [Google AI Studio](https://ai.google.dev) account — for Gemini API key
-- A [Firebase](https://firebase.google.com) project — Firestore + Storage enabled
+- A [Firebase](https://firebase.google.com) project on the **Blaze (pay-as-you-go)** plan — required for Cloud Functions outbound requests
 - An [ElevenLabs](https://elevenlabs.io) account — for TTS voice synthesis
 
 ---
@@ -182,36 +176,30 @@ flowchart TD
 git clone https://github.com/your-repo/echoroots-webapp.git
 cd echoroots-webapp
 npm install
+npm install --prefix functions
 ```
 
 ---
 
 ### Step 2 — Configure Environment Variables
 
-Create a `.env.local` file in the project root and fill in your keys:
+Create a `.env.local` file in the project root. Only Firebase config keys go here — **Gemini and ElevenLabs keys are stored securely in Firebase Secret Manager (Step 4), not here.**
 
 ```env
-# Google Gemini
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-
-# Firebase
+# Firebase (public config — safe to include)
 VITE_FIREBASE_API_KEY=your_firebase_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 VITE_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
 
-# ElevenLabs
-VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key
-VITE_ELEVENLABS_VOICE_ID=your_voice_id
+# ElevenLabs voice ID (not a secret — just a voice selection)
+VITE_ELEVENLABS_VOICE_ID=pNInz6obpgDQGcFmaJgB
 ```
 
-> **Where to find each key:**
-> - **Gemini** — [ai.google.dev](https://ai.google.dev) → Get API Key
-> - **Firebase** — Firebase Console → Project Settings → Your apps → Web app config
-> - **ElevenLabs** — [elevenlabs.io](https://elevenlabs.io) → Profile → API Keys
+> **Where to find Firebase config:** Firebase Console → Project Settings → Your apps → Web app config
 
 ---
 
@@ -232,11 +220,34 @@ service cloud.firestore.beta {
 }
 ```
 
-4. Wait approximately **60 seconds** for the rules to propagate
+4. Navigate to **Storage** → **Get started** → Test mode → same region
+5. Wait approximately **60 seconds** for rules to propagate
 
 ---
 
-### Step 4 — Start the Development Server
+### Step 4 — Deploy Cloud Functions (keeps API keys secure)
+
+```bash
+# Log in and link your project
+firebase login
+firebase use your-project-id
+
+# Store API keys in Google Secret Manager (never in code)
+firebase functions:secrets:set GEMINI_API_KEY
+# → paste your Google AI Studio key when prompted
+
+firebase functions:secrets:set ELEVENLABS_API_KEY
+# → paste your ElevenLabs key when prompted
+
+# Deploy all 9 Cloud Functions
+firebase deploy --only functions
+```
+
+This takes 2–3 minutes. Once complete, all Gemini and ElevenLabs calls are proxied through your Cloud Functions — keys are never exposed in the browser.
+
+---
+
+### Step 5 — Start the Development Server
 
 ```bash
 npm run dev
@@ -246,23 +257,23 @@ The app runs at **http://localhost:5173**
 
 ---
 
-### Step 5 — Seed the Knowledge Base *(required for Digital Elder)*
+### Step 6 — Seed the Knowledge Base *(required for Digital Elder)*
 
 1. Open the app in your browser
 2. Open browser DevTools (`F12`) → **Console** tab
-3. Run the following command:
+3. Run:
 
 ```js
 await window.seedDB()
 ```
 
-4. Wait for the confirmation message: `Seeding finished. Items added: 30`
+4. Wait for: `Seeding finished. Items added: 30`
 
 The Digital Elder is now powered by **30 verified cultural knowledge entries** covering Semai, Temiar, and Jakun traditions, language, medicine, and ceremonies.
 
 ---
 
-### Step 6 — Production Build *(optional)*
+### Step 7 — Production Build *(optional)*
 
 ```bash
 npm run build
@@ -279,7 +290,7 @@ EchoRoots is an AI-assisted application. Below is a complete disclosure of every
 
 ### Google Gemini 2.0 Flash
 
-Used for all language understanding and reasoning tasks:
+Used for all language understanding and reasoning tasks (called server-side via Cloud Functions):
 
 | Task | Description |
 |---|---|
@@ -290,25 +301,31 @@ Used for all language understanding and reasoning tasks:
 | Cultural annotation | Generates cultural context notes for each storybook scene |
 | Image prompting | Creates culturally sensitive illustration descriptions per scene |
 | RAG response generation | Synthesises answers from retrieved Firestore knowledge entries |
+| Vocabulary translation | Answers direct indigenous language vocabulary questions |
 | Pronunciation evaluation | Scores speech attempts and returns phonetic coaching tips |
 
 ### Gemini Experimental Image Generation
 
-- **Scene illustrations** — Generates original artwork for each storybook scene using culturally contextual prompts
+- **Scene illustrations** — Generates original watercolor-style artwork for each storybook scene
+- **3-provider fallback chain:** Gemini 2.0 Flash Image Gen → Imagen 4 Fast → Imagen 4 Full
 
 ### ElevenLabs
 
-- **Scene narration** (REST API) — Text-to-speech audio for each storybook page
-- **Avatar lip-sync** (WebSocket streaming) — Real-time phoneme streaming to drive 3D avatar mouth movements
+- **Scene narration** — Text-to-speech audio for each storybook page (`eleven_multilingual_v2`)
+- **Avatar lip-sync** — TTS with character-level timing data to drive 3D avatar mouth movements in real time
 
 ### TalkingHead.js + Three.js
 
-- **3D Digital Elder avatar** — WebGL-rendered avatar with Mixamo animation rig and real-time lip-sync driven by ElevenLabs audio stream
+- **3D Digital Elder avatar** — WebGL-rendered VRoid avatar with custom bone mapping and real-time lip-sync driven by ElevenLabs audio
+
+### Firebase Cloud Functions
+
+- **API proxy layer** — All Gemini and ElevenLabs calls are routed through Node.js 20 Cloud Functions. API keys are stored in Google Secret Manager and never reach the browser.
 
 ### Firebase
 
-- **Firestore** — Stores 30 curated knowledge entries for RAG retrieval, persists completed storybooks, and holds vocabulary entries
-- **Storage** — Hosts story illustration images
+- **Firestore** — Stores 30 curated knowledge entries for RAG retrieval, persists completed storybooks
+- **Storage** — Hosts story illustration images with permanent download URLs
 
 ### Browser APIs *(no external AI)*
 
@@ -330,60 +347,53 @@ Used for all language understanding and reasoning tasks:
 
 ### 🎙 StoryWeaver (`/storyweaver`)
 
-**Purpose:** Record an oral story and transform it into an illustrated bilingual storybook.
+**Purpose:** Record an oral story and transform it into an illustrated trilingual storybook (Original language → Bahasa Melayu → English).
 
 **How to use:**
 
-1. Select the **tribe and language** of the story (Semai, Temiar, or Jakun)
-2. Click the **microphone button** to begin recording
-3. Tell your story out loud — speak naturally for at least 3 seconds
-4. Click **Stop** when finished
-5. The AI pipeline runs automatically through these stages:
+1. Click the **microphone button** to begin recording
+2. Tell your story out loud — speak naturally for at least 3 seconds
+3. Click **Stop** when finished
+4. The AI pipeline runs automatically through these stages:
    - Transcribes your speech verbatim
    - Detects language and translates to English and Bahasa Melayu
    - Splits the story into narrative scenes
    - Generates culturally contextual artwork per scene
    - Narrates each scene with an ElevenLabs voice
-6. Your completed storybook appears in the built-in e-book viewer
-7. The story is auto-saved to the **Library** tab after 3 seconds
+5. Your completed storybook appears in the built-in e-book viewer
+6. The story is auto-saved to the **Library** tab after 3 seconds
 
 **Tips:**
-- The **primary use case** is an Orang Asli speaker recording in their native Semai, Temiar, or Jakun language — that is what this platform is built for
-- Gemini automatically detects whichever language is spoken, so **English and Bahasa Melayu also work** for judges who want to test the pipeline without knowing an indigenous language
-- Speak clearly at a natural pace
+- The **primary use case** is an Orang Asli speaker recording in their native Semai, Temiar, or Jakun language
+- Gemini automatically detects whichever language is spoken — **English and Bahasa Melayu also work** for judges testing the pipeline
 - The full pipeline takes 30–90 seconds depending on story length
 
 ---
 
 ### 🧙 Digital Elder (`/digital-elder`)
 
-**Purpose:** Ask questions about Orang Asli culture, traditions, language, and heritage. Receive answers from a 3D AI guardian backed by a verified knowledge base.
+**Purpose:** Ask questions about Orang Asli culture, traditions, language, and heritage.
 
 **How to use:**
 
-1. Wait for the 3D avatar to load (approximately 5 seconds)
-2. Type a question in the chat input and press **Enter** or click **Send**
+1. Wait for the 3D avatar to load (~5 seconds)
+2. Type a question and press **Enter** or click **Send**
 3. The Elder responds with culturally grounded knowledge
-4. **Gold-highlighted words** in responses are indigenous vocabulary terms — hover to see meanings and pronunciations
-5. Click the **speaker icon** to hear the Elder speak the response aloud
-6. The 3D avatar lip-syncs to the voice in real time
+4. **Gold-highlighted words** are indigenous vocabulary terms — hover to see meanings
+5. Click the **speaker icon** to hear the Elder speak aloud with 3D lip-sync
 
 ---
 
 ### 🗣 Pronunciation Lab (`/pronunciation-lab`)
 
-**Purpose:** Practice pronouncing endangered Orang Asli words with AI phonetic coaching and accuracy scoring.
+**Purpose:** Practice pronouncing endangered Orang Asli words with AI phonetic coaching.
 
 **How to use:**
 
-1. A word or phrase appears with its English meaning and phonetic guide (e.g., `SEH-mah NYEN`)
-   - **UPPERCASE syllables** = stressed
-   - **lowercase syllables** = unstressed
-2. Press the **microphone button** and pronounce the phrase clearly
-3. Press **Stop** when done
-4. Click **Evaluate** — Gemini scores your pronunciation (0–100) with specific improvement tips
-5. Use the **arrow buttons** to navigate between words
-6. Your **streak counter** tracks consecutive successful attempts
+1. A phrase appears with its English meaning and phonetic guide (e.g., `SEH-mah NYEN`)
+2. Press **microphone** and pronounce the phrase clearly
+3. Click **Evaluate** — AI scores your pronunciation (0–100) with specific tips
+4. Use arrow buttons to navigate between words
 
 ---
 
@@ -392,33 +402,27 @@ Used for all language understanding and reasoning tasks:
 ### Quick Start Checklist
 
 - [ ] Run `npm run dev` and open `http://localhost:5173`
+- [ ] Ensure Cloud Functions are deployed (`firebase deploy --only functions`)
 - [ ] Run `await window.seedDB()` in browser console (required for Digital Elder)
 - [ ] Test **Digital Elder** first — fastest to demo
-- [ ] Test **Pronunciation Lab** — no API calls needed for browsing phrases
+- [ ] Test **Pronunciation Lab** — no recording needed for browsing phrases
 - [ ] Test **StoryWeaver** with one of the example sentences below
 
 ---
 
 ### Recommended Test Sentences for StoryWeaver
 
-Speak any of these into your microphone after clicking Record.
-
-> **Note for judges:** StoryWeaver is designed for Orang Asli speakers recording in their native language. If you are an indigenous speaker, record freely in Semai, Temiar, or Jakun — the pipeline will transcribe and translate your words. If you are a judge who does not speak an indigenous language, the Bahasa Melayu or English examples below will still demonstrate the full pipeline.
+> **Note:** StoryWeaver is designed for Orang Asli speakers recording in their native language. If you are a judge who does not speak an indigenous language, the Bahasa Melayu or English examples below will still demonstrate the full pipeline.
 
 ---
 
-**Bahasa Melayu — closest to authentic use case, recommended for judges (~60 seconds):**
+**Bahasa Melayu — closest to authentic use case (~60 seconds):**
 > *"Pada zaman dahulu, orang Semai percaya bahawa setiap pokok di hutan mempunyai roh sendiri. Apabila mereka menebang pokok, mereka akan meminta maaf dan mengucapkan terima kasih kepada roh tersebut. Amalan ini diwarisi turun-temurun sebagai tanda hormat kepada alam semula jadi."*
 
 ---
 
 **Short English — fast pipeline, good for quick demo (~30 seconds):**
 > *"Long ago, in the forest of the Semai people, there lived a wise old man who could speak to the trees. Every morning he walked to the river to give thanks for the water."*
-
----
-
-**Medium English — 2–3 scenes, recommended (~60 seconds):**
-> *"The Temiar shaman entered the forest at midnight carrying only a torch made from tree bark. He had been called by the spirits to heal a sick child in the village. He chanted the ancient songs taught by his grandmother, and by sunrise the fever had broken."*
 
 ---
 
@@ -429,18 +433,15 @@ Speak any of these into your microphone after clicking Record.
 
 ### Recommended Questions for Digital Elder
 
-Try these in the chat:
-
 ```
 What is a sewang ceremony?
 Tell me about Semai healing plants.
 Who is the tok batin in Jakun culture?
 What does punan mean?
 How do the Temiar communicate with spirits?
+What is eat in Semai?
+How do you say thank you in Temiar?
 What trees are sacred to the Semai?
-Tell me about the halaq shaman.
-What is the gunik spirit world?
-How do the Orang Asli use the kemunting plant?
 ```
 
 ---
@@ -464,40 +465,48 @@ How do the Orang Asli use the kemunting plant?
 
 ```
 echoroots-webapp/
+├── functions/                    # Firebase Cloud Functions (Node.js 20)
+│   ├── index.js                  # 9 API proxy functions (Gemini + ElevenLabs)
+│   └── package.json
 ├── public/
-│   ├── talkinghead/          # TalkingHead.js 3D avatar library
-│   ├── models/               # GLB avatar model file
-│   └── animations/           # Mixamo FBX animation files
+│   ├── talkinghead/              # TalkingHead.js 3D avatar library
+│   ├── models/                   # GLB avatar model file
+│   └── animations/               # Mixamo FBX animation files
 ├── src/
 │   ├── components/
-│   │   ├── home/             # Landing page section components
-│   │   ├── AudioRecorder.jsx # Web Audio API recording with waveform
-│   │   ├── EBookViewer.jsx   # Paginated storybook viewer
+│   │   ├── home/                 # Landing page section components
+│   │   ├── AudioRecorder.jsx     # Web Audio API recording with waveform
+│   │   ├── EBookViewer.jsx       # Paginated trilingual storybook viewer
+│   │   ├── StoryCard.jsx         # Library story card with cover image
+│   │   ├── StoryReaderOverlay.jsx# Fullscreen story reader modal
 │   │   ├── Navbar.jsx
 │   │   └── Footer.jsx
 │   ├── data/
-│   │   └── seedKnowledge.json  # 30 curated Orang Asli knowledge entries
+│   │   └── seedKnowledge.json    # 30 curated Orang Asli knowledge entries
 │   ├── hooks/
-│   │   ├── useAudioRecorder.js     # Recording, waveform, speech detection
-│   │   ├── useStoryPipeline.js     # Pipeline orchestration + Zustand bridge
-│   │   └── useSpeechRecognition.js # Browser SpeechRecognition wrapper
+│   │   ├── useAudioRecorder.js   # Recording, waveform, speech detection
+│   │   ├── useStoryPipeline.js   # Pipeline orchestration + Zustand bridge
+│   │   └── useSpeechRecognition.js
 │   ├── pages/
 │   │   ├── Home.jsx
 │   │   ├── StoryWeaver.jsx
 │   │   ├── DigitalElder.jsx
 │   │   └── PronunciationLab.jsx
 │   ├── services/
-│   │   ├── gemini.js         # All Gemini API calls
-│   │   ├── rag.js            # RAG: Firestore vector/keyword search
-│   │   ├── storyPipeline.js  # StoryWeaver multi-stage orchestrator
-│   │   ├── elevenlabs.js     # TTS REST + WebSocket streaming
-│   │   ├── avatar.js         # TalkingHead.js wrapper
-│   │   └── firebase.js       # Firebase Firestore + Storage init
+│   │   ├── gemini.js             # Calls Cloud Functions (not Gemini directly)
+│   │   ├── elevenlabs.js         # Calls Cloud Functions (not ElevenLabs directly)
+│   │   ├── avatar.js             # TalkingHead.js wrapper + lip-sync
+│   │   ├── rag.js                # RAG: Firestore keyword search + response gen
+│   │   ├── storyPipeline.js      # StoryWeaver multi-stage orchestrator
+│   │   ├── storyService.js       # Firestore + Storage CRUD for stories
+│   │   └── firebase.js           # Firebase init (db, storage, functions)
 │   ├── stores/
-│   │   └── appStore.js       # Zustand global state
+│   │   └── appStore.js           # Zustand global state
 │   └── utils/
-│       └── vocabParser.js    # Parses [word|meaning] inline vocab format
-├── .env.local                # API keys — not committed to version control
+│       └── vocabParser.js        # Parses [word|meaning] inline vocab format
+├── .env.local                    # Firebase config only — AI keys NOT stored here
+├── firebase.json                 # Firebase Hosting + Functions config
+├── .firebaserc                   # Firebase project ID
 └── README.md
 ```
 
@@ -509,9 +518,10 @@ echoroots-webapp/
 |---|---|
 | Embedding vectors | Gemini `embedding-001` requires separate API quota. The knowledge base uses keyword search as fallback — Digital Elder still functions correctly. |
 | 3D avatar | Requires WebGL browser support. Gracefully degrades to a flat chat UI if WebGL is unavailable. |
-| Image generation | Gemini image generation is experimental and subject to rate limits. A placeholder is shown on failure. |
+| Image generation | Gemini image generation is experimental and subject to rate limits (15 RPM on free tier). A placeholder is shown on failure. |
 | ElevenLabs TTS | Requires a valid API key with remaining character quota. Falls back to browser SpeechSynthesis automatically. |
-| Client-side API keys | Keys are in the browser bundle — intentional for hackathon prototype. Production deployment would require a backend proxy. |
+| Cloud Functions cold start | First call after inactivity may take 2–3 seconds extra. Subsequent calls are fast. |
+| Firestore rules | Currently in Test Mode (open read/write). Tighten rules before production deployment. |
 
 ---
 
@@ -525,6 +535,6 @@ EchoRoots was built with deep respect for the **Semai**, **Temiar**, and **Jakun
 
 *"Every word, every whispered story, every cultural tradition deserves to echo through time."*
 
-**🌿EchoRoots: Echoing Ancestral Voices Into The Digita Future**
+**🌿 EchoRoots: Echoing Ancestral Voices Into The Digital Future**
 
 </div>
