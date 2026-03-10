@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+/* ─── Theme Tokens (V4: Sacred Forest) ─── */
+:root {
+  /* Backgrounds */
+  --bg-deep: #0a1a0f; /* Deep forest */
+  --bg-surface: #0f2518; /* Moss */
+  --bg-card: rgba(19, 46, 27, 0.6); /* Fern with opacity for glass */
+  --bg-card-hover: rgba(26, 61, 36, 0.8); /* Lighter fern */
+  
+  /* Accents */
+  --accent: #c8a45c; /* Warm gold */
+  --accent-light: #e8d5a3; /* Cream gold */
+  --accent-glow: rgba(200, 164, 92, 0.15); /* Gold glow */
+  
+  /* Typography */
+  --text-primary: #f0ede4; /* Warm white */
+  --text-secondary: #9caa97; /* Muted sage */
+  
+  /* Status */
+  --success: #34d399; /* Emerald */
+  --danger: #fb7185; /* Soft rose */
+  
+  /* Vocab Highlights */
+  --vocab-bg: rgba(200, 164, 92, 0.1);
+  --vocab-border: rgba(200, 164, 92, 0.3);
+  
+  /* Font Families */
+  --font-hero: 'Playfair Display', serif;
+  --font-heading: 'DM Serif Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ─── Base Styles ─── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-light);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-surface);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: var(--accent);
+  color: var(--bg-deep);
+}
+
+/* ─── Utility Classes ─── */
+.premium-glass {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 164, 92, 0.12); /* Subtle gold border */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.premium-glass:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(200, 164, 92, 0.3);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--accent-glow);
+}
+
+.premium-glass-strong {
+  background: rgba(10, 26, 15, 0.85); /* Darker glass for Navbar/Footer */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(200, 164, 92, 0.05);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(to right, #e8d5a3, #c8a45c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.accent-glow {
+  box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(200, 164, 92, 0.1);
+}
+
+/* Text boxes meant to look like soft paper panels (StoryWeaver/Chat) */
+.paper-panel {
+  background-color: #f0ede4;
+  color: #0a1a0f; 
+  border-radius: 12px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.02), 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.vocab-highlight {
+  background: var(--vocab-bg);
+  border-bottom: 1px dashed var(--vocab-border);
+  padding: 1px 4px;
+  border-radius: 3px;
+  cursor: help;
+  transition: all 0.3s ease;
+}
+
+.vocab-highlight:hover {
+  background: rgba(200, 164, 92, 0.2);
+  border-color: var(--accent);
+}
+
+/* ─── Animations ─── */
+@keyframes recording-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.5); }
+  50% { opacity: 0.8; transform: scale(1.05); box-shadow: 0 0 0 8px rgba(251, 113, 133, 0); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50% { box-shadow: 0 0 40px rgba(200, 164, 92, 0.25), 0 0 80px var(--accent-glow); }
+}
+
+.animate-recording {
+  animation: recording-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}

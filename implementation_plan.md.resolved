@@ -1,0 +1,937 @@
+# EchoRoots — Complete Implementation Plan
+
+> **Echoing Ancestral Voices into the Digital Future**
+> Borneo HackWKND 26 · AI for Indigenous Language Preservation
+
+---
+
+## 1. High-Level Architecture
+
+```mermaid
+graph TB
+    subgraph Presentation["🖥️ Presentation Layer"]
+        UI["React 18 SPA"]
+        TH["TalkingHead 3D Canvas"]
+        Chat["Chat Interface"]
+        Rec["Audio Recorder"]
+        EBook["E-Book Viewer"]
+        PronLab["Pronunciation Lab"]
+    end
+
+    subgraph State["📦 State Layer"]
+        Zustand["Zustand Store"]
+        Session["Session & Auth-free ID"]
+        ChatHist["Chat History"]
+        Pipeline["Pipeline State"]
+        Progress["Learning Progress"]
+    end
+
+    subgraph Services["⚙️ Service Layer"]
+        GeminiSvc["GeminiService"]
+        ELSvc["ElevenLabsService"]
+        AvatarSvc["AvatarService"]
+        RAGSvc["RAGService"]
+        StorageSvc["StorageService"]
+        PipelineSvc["StoryPipelineService"]
+    end
+
+    subgraph APIs["☁️ External API Layer"]
+        Gemini["Gemini 2.0 Flash\n(LLM + Embed + Imagen)"]
+        EL["ElevenLabs\n(WebSocket TTS)"]
+        FS["Cloud Firestore\n(DB + Vector Search)"]
+        FBStore["Firebase Storage\n(Files, Audio, Images)"]
+        CF["Cloud Functions\n(Heavy Processing)"]
+    end
+
+    UI --> Zustand
+    TH --> Zustand
+    Chat --> Zustand
+    Rec --> Zustand
+    EBook --> Zustand
+    PronLab --> Zustand
+
+    Zustand --> GeminiSvc
+    Zustand --> ELSvc
+    Zustand --> AvatarSvc
+    Zustand --> RAGSvc
+    Zustand --> StorageSvc
+    Zustand --> PipelineSvc
+
+    GeminiSvc --> Gemini
+    ELSvc --> EL
+    AvatarSvc --> EL
+    RAGSvc --> Gemini
+    RAGSvc --> FS
+    StorageSvc --> FS
+    StorageSvc --> FBStore
+    PipelineSvc --> GeminiSvc
+    PipelineSvc --> ELSvc
+    PipelineSvc --> StorageSvc
+
+    style Presentation fill:#0d1b2a,stroke:#00e5a0,color:#e0e0e0
+    style State fill:#1b2838,stroke:#00e5a0,color:#e0e0e0
+    style Services fill:#1b3a4b,stroke:#00e5a0,color:#e0e0e0
+    style APIs fill:#2a1b3d,stroke:#00e5a0,color:#e0e0e0
+```
+
+---
+
+## 2. StoryWeaver Pipeline Flow
+
+```mermaid
+flowchart LR
+    A["🎤 Audio\nRecording"] --> B["📝 Gemini\nTranscription"]
+    B --> C["🌐 Gemini\nTranslation\n(EN + MS)"]
+    C --> D["✂️ Gemini\nScene Splitting"]
+    D --> E["🎨 Imagen 3\nIllustration"]
+    E --> F["🔊 ElevenLabs\nNarration TTS"]
+    F --> G["📖 E-Book\nAssembly"]
+    G --> H["💾 Firestore\nArchive"]
+    H --> I["🧠 RAG\nKnowledge Base"]
+
+    style A fill:#1a1a2e,stroke:#00e5a0,color:#e0e0e0
+    style B fill:#16213e,stroke:#00e5a0,color:#e0e0e0
+    style C fill:#0f3460,stroke:#00e5a0,color:#e0e0e0
+    style D fill:#1a1a2e,stroke:#00e5a0,color:#e0e0e0
+    style E fill:#16213e,stroke:#00e5a0,color:#e0e0e0
+    style F fill:#0f3460,stroke:#00e5a0,color:#e0e0e0
+    style G fill:#1a1a2e,stroke:#00e5a0,color:#e0e0e0
+    style H fill:#16213e,stroke:#00e5a0,color:#e0e0e0
+    style I fill:#0f3460,stroke:#00e5a0,color:#e0e0e0
+```
+
+---
+
+## 3. Digital Elder RAG Flow
+
+```mermaid
+flowchart LR
+    Q["❓ User Query"] --> EMB["🔢 Gemini\nEmbed Query"]
+    EMB --> VS["🔍 Firestore\nVector Search\n(Top-5)"]
+    VS --> CTX["📄 Context\nAssembly"]
+    CTX --> RAG["🧠 Gemini RAG\nGeneration"]
+    RAG --> VOC["📚 Vocab\nExtraction"]
+    VOC --> TH["🗣️ TalkingHead\n+ ElevenLabs\nLip-Sync"]
+    TH --> DISP["💬 Chat UI\nDisplay"]
+
+    style Q fill:#1a1a2e,stroke:#00e5a0,color:#e0e0e0
+    style EMB fill:#16213e,stroke:#00e5a0,color:#e0e0e0
+    style VS fill:#0f3460,stroke:#00e5a0,color:#e0e0e0
+    style CTX fill:#1a1a2e,stroke:#00e5a0,color:#e0e0e0
+    style RAG fill:#16213e,stroke:#00e5a0,color:#e0e0e0
+    style VOC fill:#0f3460,stroke:#00e5a0,color:#e0e0e0
+    style TH fill:#1a1a2e,stroke:#00e5a0,color:#e0e0e0
+    style DISP fill:#16213e,stroke:#00e5a0,color:#e0e0e0
+```
+
+---
+
+## 4. Component Hierarchy
+
+```mermaid
+graph TD
+    App["App"]
+    App --> Navbar["Navbar"]
+    App --> Routes["Routes"]
+
+    Routes --> Home["HomePage"]
+    Home --> Hero["HeroSection"]
+    Home --> Features["FeatureCards"]
+    Home --> CTA["CallToAction"]
+
+    Routes --> SW["StoryWeaverPage"]
+    SW --> AR["AudioRecorder\n(waveform viz)"]
+    SW --> PP["PipelineProgress\n(stage indicators)"]
+    SW --> EBV["EBookViewer\n(bilingual layout)"]
+    SW --> SA["StoryArchive\n(saved stories grid)"]
+
+    Routes --> DE["DigitalElderPage"]
+    DE --> AC["AvatarCanvas\n(TalkingHead wrapper)"]
+    DE --> CI["ChatInterface"]
+    CI --> CB["ChatBubble\n(+ VocabHighlight)"]
+    CI --> CInput["ChatInput"]
+    DE --> KP["KnowledgePanel\n(retrieved sources)"]
+
+    Routes --> PL["PronunciationLabPage"]
+    PL --> AC2["AvatarCanvas\n(shared)"]
+    PL --> PC["PhraseCard"]
+    PL --> PM["PronunciationMeter\n(animated score)"]
+    PL --> PT["ProgressTracker"]
+
+    App --> Shared["SharedComponents"]
+    Shared --> LS["LoadingSpinner"]
+    Shared --> AP["AudioPlayer"]
+    Shared --> VT["VocabTooltip"]
+
+    style App fill:#0d1b2a,stroke:#00e5a0,color:#e0e0e0
+    style Routes fill:#1b2838,stroke:#00e5a0,color:#e0e0e0
+    style Shared fill:#1b3a4b,stroke:#00e5a0,color:#e0e0e0
+```
+
+---
+
+## 5. Layer Responsibility Breakdown
+
+| Layer | Responsibility | Key Modules |
+|-------|---------------|-------------|
+| **Presentation** | Render UI, capture user input (audio, text), display results, animate transitions | React pages, components, Framer Motion, TalkingHead canvas |
+| **State** | Global app state, session management, pipeline progress tracking, chat history | Zustand `appStore.js` — single flat store with slices |
+| **Service** | Business logic, API orchestration, data transformation, pipeline coordination | `gemini.js`, `elevenlabs.js`, `avatar.js`, `rag.js`, `storyPipeline.js`, `firebase.js` |
+| **API / External** | Raw network calls, authentication, data persistence, file storage | Gemini API, ElevenLabs WebSocket, Firebase Firestore/Storage/Functions |
+
+---
+
+## 6. Tech Stack (Locked)
+
+| Layer | Technology | Version | Justification |
+|-------|-----------|---------|---------------|
+| **Runtime** | Node.js | 20 LTS | Stable, Vite-compatible |
+| **Frontend** | React | 18.x | Component model, ecosystem, hooks |
+| **Build** | Vite | 6.x | Sub-second HMR, zero-config React |
+| **Styling** | Tailwind CSS | 4.x | Utility-first, rapid iteration via `@tailwindcss/vite` |
+| **Routing** | React Router | 6.x | Declarative client-side SPA routing |
+| **State** | Zustand | 5.x | Zero boilerplate, no providers needed |
+| **Animation** | Framer Motion | 12.x | Declarative page transitions, micro-interactions |
+| **3D Avatar** | TalkingHead.js | latest | Purpose-built talking avatar with ElevenLabs lip-sync |
+| **Avatar Model** | Ready Player Me (GLB) | — | Custom avatar with ARKit + Oculus viseme morph targets |
+| **Avatar Anims** | Mixamo (FBX) | — | Free idle/talking/gesture animations |
+| **Core LLM** | Gemini 2.0 Flash | latest | Multimodal audio+text+image, fast, generous free tier |
+| **Embeddings** | Gemini Embedding API | latest | Vector embeddings for RAG pipeline |
+| **Image Gen** | Imagen 3 (via Gemini) | latest | Story illustration generation |
+| **TTS** | ElevenLabs WebSocket API | v1 | Natural voice, native TalkingHead lip-sync integration |
+| **Database** | Cloud Firestore | v10 | Real-time sync, offline cache, native vector search |
+| **File Storage** | Firebase Storage | v10 | Audio recordings, AI images, e-books, cached TTS |
+| **Server Logic** | Cloud Functions (Firebase) | v2 | RAG orchestration, heavy AI processing |
+| **Auth** | None | — | Anonymous Zustand session IDs for demo |
+
+---
+
+## 7. Complete Project File Structure
+
+```
+c:\echoRoots_webapp\
+├── index.html
+├── vite.config.js
+├── package.json
+├── .env                            # VITE_GEMINI_API_KEY, VITE_ELEVENLABS_*
+├── public/
+│   ├── models/
+│   │   └── elder-avatar.glb        # Ready Player Me (morph targets)
+│   ├── animations/
+│   │   ├── Idle.fbx
+│   │   ├── Talking.fbx
+│   │   └── Greeting.fbx
+│   └── talkinghead/                # TalkingHead library files
+│       ├── talkinghead.mjs
+│       └── modules/
+├── src/
+│   ├── main.jsx                    # React entry + CSS import
+│   ├── index.css                   # Tailwind directives + custom theme
+│   ├── App.jsx                     # Router + layout + AnimatePresence
+│   ├── pages/
+│   │   ├── Home.jsx                # Landing hero + feature cards + CTA
+│   │   ├── StoryWeaver.jsx         # Audio → E-Book pipeline page
+│   │   ├── DigitalElder.jsx        # RAG chat + 3D avatar page
+│   │   └── PronunciationLab.jsx    # Language tutor page
+│   ├── components/
+│   │   ├── Navbar.jsx              # Navigation bar
+│   │   ├── AvatarCanvas.jsx        # TalkingHead integration wrapper
+│   │   ├── AudioRecorder.jsx       # MediaRecorder + Web Audio waveform
+│   │   ├── PipelineProgress.jsx    # StoryWeaver stage tracker
+│   │   ├── EBookViewer.jsx         # Bilingual e-book layout
+│   │   ├── StoryCard.jsx           # Story archive card
+│   │   ├── ChatBubble.jsx          # Message display + VocabHighlight
+│   │   ├── ChatInput.jsx           # Text input + send
+│   │   ├── VocabHighlight.jsx      # Indigenous word tooltip
+│   │   ├── PronunciationMeter.jsx  # Animated score display
+│   │   ├── AudioPlayer.jsx         # Reusable audio player
+│   │   └── LoadingSpinner.jsx      # Shared loading state
+│   ├── services/
+│   │   ├── gemini.js               # All Gemini API calls
+│   │   ├── elevenlabs.js           # ElevenLabs TTS (REST + WebSocket)
+│   │   ├── avatar.js               # TalkingHead init, speak, stop
+│   │   ├── rag.js                  # Full RAG pipeline orchestration
+│   │   ├── firebase.js             # Firestore + Storage initialization
+│   │   └── storyPipeline.js        # Full StoryWeaver pipeline
+│   ├── stores/
+│   │   └── appStore.js             # Zustand: flat store with slices
+│   ├── hooks/
+│   │   ├── useAudioRecorder.js     # MediaRecorder hook
+│   │   ├── useSpeechRecognition.js # Web Speech API hook
+│   │   └── useStoryPipeline.js     # Pipeline orchestration hook
+│   ├── utils/
+│   │   ├── vocabParser.js          # Parse [word|meaning] format
+│   │   └── audioUtils.js           # Audio blob conversion helpers
+│   └── data/
+│       └── seedKnowledge.json      # 30–50 cultural knowledge entries
+└── firebase/
+    ├── firestore.rules
+    ├── storage.rules
+    └── functions/
+        └── index.js                # Cloud Functions (heavy processing)
+```
+
+---
+
+## 8. Service Layer Interface Signatures
+
+### `gemini.js` — Gemini API Facade
+
+```javascript
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+/**
+ * Transcribe audio blob to text using Gemini multimodal.
+ * Converts blob → base64, sends as inline audio part.
+ */
+export async function transcribeAudio(audioBlob)
+// → { transcription: string, language: string, confidence: number }
+
+/**
+ * Translate text from source language to multiple targets.
+ * Includes cultural annotations for nuanced terms.
+ */
+export async function translateText(text, sourceLang, targetLangs)
+// → { translations: [{ lang: string, text: string, culturalNotes: string }] }
+
+/**
+ * Split a story into 3–5 illustrated scenes.
+ * Returns scene text, translation, and Imagen-ready image prompts.
+ */
+export async function splitIntoScenes(storyText, translation)
+// → { scenes: [{ sceneNumber: number, text: string, translation: string, imagePrompt: string }] }
+
+/**
+ * Generate an illustration via Imagen 3.
+ * Returns a base64 image or a Firebase Storage URL after upload.
+ */
+export async function generateIllustration(prompt)
+// → { imageBase64: string, mimeType: string }
+
+/**
+ * Generate a vector embedding for RAG retrieval.
+ */
+export async function generateEmbedding(text)
+// → { embedding: number[] }   (768-dim vector)
+
+/**
+ * Generate a RAG-grounded response given a query and context docs.
+ * Injects the Digital Elder system prompt.
+ */
+export async function generateRAGResponse(query, contextDocs)
+// → { answer: string, vocabTerms: [{ word: string, meaning: string }] }
+
+/**
+ * Evaluate user pronunciation against a reference phrase.
+ */
+export async function evaluatePronunciation(userAudioBlob, referencePhrase)
+// → { score: number, feedback: string, tips: string[] }
+```
+
+### `elevenlabs.js` — ElevenLabs TTS
+
+```javascript
+const API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
+const VOICE_ID = import.meta.env.VITE_ELEVENLABS_VOICE_ID;
+
+/**
+ * REST-based TTS for scene narration (StoryWeaver).
+ * Returns audio blob for download/playback.
+ */
+export async function textToSpeech(text, voiceId = VOICE_ID)
+// → { audioBlob: Blob, audioUrl: string }
+
+/**
+ * Initialize a WebSocket connection for streaming TTS to TalkingHead.
+ * Returns a WebSocket instance that pushes audio chunks + word timestamps.
+ */
+export function initWebSocket(voiceId = VOICE_ID)
+// → WebSocket (ready for TalkingHead.speakWithAudio())
+```
+
+### `avatar.js` — TalkingHead Wrapper
+
+```javascript
+/**
+ * Initialize TalkingHead in a container element.
+ * Loads GLB avatar + Mixamo animations + configures ElevenLabs lip-sync.
+ */
+export async function initAvatar(containerElement, options = {})
+// → TalkingHead instance
+
+/**
+ * Make the avatar speak text with lip-sync via ElevenLabs WebSocket.
+ */
+export async function speak(talkingHead, text)
+// → void (avatar lip-syncs in real-time)
+
+/**
+ * Stop any current speech.
+ */
+export function stopSpeaking(talkingHead)
+// → void
+
+/**
+ * Play a named animation (Idle, Talking, Greeting).
+ */
+export async function playAnimation(talkingHead, animationName)
+// → void
+
+/**
+ * Get current avatar state.
+ */
+export function getAvatarState(talkingHead)
+// → { isSpeaking: boolean, currentAnimation: string }
+```
+
+### `rag.js` — Full RAG Pipeline
+
+```javascript
+import { generateEmbedding, generateRAGResponse } from './gemini';
+import { db } from './firebase';
+
+/**
+ * Full RAG pipeline: embed → search → augment → generate.
+ * Returns answer with vocabulary terms and source documents.
+ */
+export async function queryKnowledgeBase(question)
+// → { answer: string, sources: Document[], vocabTerms: VocabTerm[] }
+
+/**
+ * Seed Firestore with cultural knowledge from seedKnowledge.json.
+ * Computes embeddings for each entry and stores them.
+ */
+export async function seedKnowledgeBase(entries)
+// → { seededCount: number }
+```
+
+### `storyPipeline.js` — StoryWeaver Orchestrator
+
+```javascript
+import { transcribeAudio, translateText, splitIntoScenes, generateIllustration } from './gemini';
+import { textToSpeech } from './elevenlabs';
+
+/**
+ * Orchestrates the full StoryWeaver pipeline.
+ * Calls onProgress(stage, data) at each step for UI updates.
+ * 
+ * Stages: 'recording' → 'transcribing' → 'translating' → 
+ *         'splitting' → 'illustrating' → 'narrating' → 'assembling' → 'complete'
+ */
+export async function processStory(audioBlob, onProgress)
+// → {
+//     transcription: string,
+//     language: string,
+//     translations: [{ lang: string, text: string }],
+//     scenes: [{
+//       sceneNumber: number,
+//       originalText: string,
+//       translationEn: string,
+//       translationMs: string,
+//       imageBase64: string,
+//       audioBlob: Blob,
+//       culturalNote: string
+//     }],
+//     metadata: { language: string, duration: number, createdAt: Date }
+//   }
+```
+
+---
+
+## 9. Data Model (Firestore Collections)
+
+### Collection: `stories`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (auto) | Document ID |
+| `title` | string | Auto-generated or user-provided title |
+| `originalAudioUrl` | string | Firebase Storage URL for raw recording |
+| `transcription` | string | Original language text |
+| `language` | string | e.g. "semai", "temiar", "jakun" |
+| `tribe` | string | Cultural group identifier |
+| `elderName` | string | Optional narrator name |
+| `scenes` | array | Scene objects (see below) |
+| `createdAt` | timestamp | Creation time |
+| `tags` | string[] | Searchable tags |
+
+**Scene sub-document:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `originalText` | string | Text in indigenous language |
+| `translationEn` | string | English translation |
+| `translationMs` | string | Malay translation |
+| `imageUrl` | string | Firebase Storage URL for illustration |
+| `audioUrl` | string | Cached ElevenLabs narration URL |
+| `culturalNote` | string | Gemini-generated cultural annotation |
+
+---
+
+### Collection: `knowledge_base`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (auto) | Document ID |
+| `content` | string | Cultural knowledge text |
+| `category` | string | `"folklore"` / `"medicine"` / `"history"` / `"skills"` / `"traditions"` / `"kinship"` |
+| `language` | string | e.g. "semai" |
+| `tribe` | string | Cultural group |
+| `embedding` | vector(768) | Gemini embedding for vector search |
+| `source` | string | Attribution / source reference |
+| `tags` | string[] | Searchable tags |
+
+---
+
+### Collection: `vocabulary`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (auto) | Document ID |
+| `word` | string | Indigenous word |
+| `language` | string | Language identifier |
+| `pronunciationUrl` | string | Audio reference URL |
+| `meaningEn` | string | English meaning |
+| `meaningMs` | string | Malay meaning |
+| `usageExample` | string | Example sentence |
+| `culturalContext` | string | Usage context / nuance |
+| `category` | string | Word category |
+
+---
+
+## 10. State Management (Zustand Store Shape)
+
+```javascript
+// stores/appStore.js
+import { create } from 'zustand';
+
+const useAppStore = create((set, get) => ({
+  // ─── Session ───
+  sessionId: crypto.randomUUID(),
+
+  // ─── StoryWeaver Pipeline ───
+  pipeline: {
+    stage: 'idle',           // idle | recording | transcribing | translating | splitting | illustrating | narrating | assembling | complete | error
+    progress: 0,             // 0–100%
+    transcription: null,
+    translations: [],
+    scenes: [],
+    error: null,
+  },
+  setPipelineStage: (stage, data) => set((s) => ({
+    pipeline: { ...s.pipeline, stage, ...data }
+  })),
+  resetPipeline: () => set({ pipeline: { stage: 'idle', progress: 0, transcription: null, translations: [], scenes: [], error: null } }),
+
+  // ─── Digital Elder Chat ───
+  chatMessages: [],          // [{ role: 'user'|'elder', text, vocabTerms?, sources?, timestamp }]
+  addChatMessage: (msg) => set((s) => ({
+    chatMessages: [...s.chatMessages, { ...msg, timestamp: Date.now() }]
+  })),
+  clearChat: () => set({ chatMessages: [] }),
+
+  // ─── Avatar ───
+  avatarReady: false,
+  avatarSpeaking: false,
+  setAvatarReady: (ready) => set({ avatarReady: ready }),
+  setAvatarSpeaking: (speaking) => set({ avatarSpeaking: speaking }),
+
+  // ─── Story Archive ───
+  savedStories: [],
+  addSavedStory: (story) => set((s) => ({
+    savedStories: [story, ...s.savedStories]
+  })),
+
+  // ─── Pronunciation Lab ───
+  pronunciationProgress: {
+    wordsAttempted: 0,
+    wordsCorrect: 0,
+    streak: 0,
+    history: [],
+  },
+  updatePronunciationProgress: (result) => set((s) => ({
+    pronunciationProgress: {
+      ...s.pronunciationProgress,
+      wordsAttempted: s.pronunciationProgress.wordsAttempted + 1,
+      wordsCorrect: result.score >= 70
+        ? s.pronunciationProgress.wordsCorrect + 1
+        : s.pronunciationProgress.wordsCorrect,
+      streak: result.score >= 70
+        ? s.pronunciationProgress.streak + 1
+        : 0,
+      history: [...s.pronunciationProgress.history, result],
+    }
+  })),
+
+  // ─── UI State ───
+  isLoading: false,
+  setLoading: (loading) => set({ isLoading: loading }),
+}));
+
+export default useAppStore;
+```
+
+---
+
+## 11. API Integration Map
+
+| Service Module | External API | Trigger | Data Flow |
+|---------------|-------------|---------|-----------|
+| `gemini.js` → `transcribeAudio()` | Gemini 2.0 Flash (multimodal) | User stops recording | audioBlob → base64 → Gemini → transcription text |
+| `gemini.js` → `translateText()` | Gemini 2.0 Flash | After transcription | text → Gemini → translations array |
+| `gemini.js` → `splitIntoScenes()` | Gemini 2.0 Flash | After translation | story text → Gemini → scene objects with image prompts |
+| `gemini.js` → `generateIllustration()` | Imagen 3 (via Gemini) | For each scene | image prompt → Imagen 3 → base64 image |
+| `gemini.js` → `generateEmbedding()` | Gemini Embedding | User asks question / seed time | text → Gemini → 768-dim vector |
+| `gemini.js` → `generateRAGResponse()` | Gemini 2.0 Flash | After context assembled | query + docs → Gemini → grounded answer |
+| `gemini.js` → `evaluatePronunciation()` | Gemini 2.0 Flash | User records pronunciation | audioBlob + phrase → Gemini → score + feedback |
+| `elevenlabs.js` → `textToSpeech()` | ElevenLabs REST | Scene narration (StoryWeaver) | text → ElevenLabs → audioBlob |
+| `elevenlabs.js` → `initWebSocket()` | ElevenLabs WebSocket | Avatar speaks (Digital Elder) | text → WS → chunked audio + timestamps |
+| `avatar.js` → `speak()` | TalkingHead + ElevenLabs WS | RAG answer ready | text → TalkingHead → lip-synced 3D avatar |
+| `firebase.js` → Firestore | Cloud Firestore | Save story / query KB | CRUD + vector search |
+| `firebase.js` → Storage | Firebase Storage | Save audio/images | File upload/download |
+
+---
+
+## 12. UI/UX Design Direction
+
+### Color Palette
+
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `--bg-deep` | `#0a0e17` | Page backgrounds |
+| `--bg-surface` | `#111827` | Card / panel backgrounds |
+| `--bg-elevated` | `#1f2937` | Hover states, modals |
+| `--accent` | `#00e5a0` | Primary CTA, highlights, active states |
+| `--accent-dim` | `#00b37d` | Secondary accent, borders |
+| `--text-primary` | `#f1f5f9` | Main text |
+| `--text-secondary` | `#94a3b8` | Muted text, labels |
+| `--danger` | `#ef4444` | Errors, recording indicator |
+| `--vocab-bg` | `#00e5a01a` | Vocabulary highlight background |
+| `--vocab-border` | `#00e5a066` | Vocabulary highlight border |
+
+### Typography
+
+| Use | Font | Fallback |
+|-----|------|----------|
+| Headings | `'Outfit', sans-serif` | System sans-serif |
+| Body | `'Inter', sans-serif` | System sans-serif |
+| Mono / data | `'JetBrains Mono', monospace` | System monospace |
+
+### Page-Level UI Wireframes
+
+#### Home Page
+- **Hero section**: Full-viewport, animated particle/pattern background evoking forest canopy. Tagline "Echoing Ancestral Voices into the Digital Future" with glowing emerald accent animation. CTA buttons to StoryWeaver and Digital Elder.
+- **Feature cards**: 3 cards (StoryWeaver, Digital Elder, Pronunciation Lab) with icons, descriptions, and hover scale/glow effects. Use Framer Motion stagger animation on scroll.
+- **Stats/impact bar**: "500+ languages at risk · 1 platform to preserve them"
+- **Footer**: Minimal — Borneo HackWKND 26 credit, team names.
+
+#### StoryWeaver Page
+- **Left panel (40%)**: Audio recorder with pulsing waveform visualization (Web Audio API AnalyserNode). Large record/stop button with red pulse animation during recording. Timer showing recording duration.
+- **Center**: Pipeline progress — vertical stepper showing stages (transcribing → translating → illustrating → narrating → complete) with animated progress indicators and checkmarks.
+- **Right panel (60%)**: E-Book viewer that builds in real-time as pipeline completes. Bilingual layout: left column = original language text, right column = English/Malay translation. Full-width illustration between text blocks. Audio player per scene. Page navigation.
+- **Bottom drawer**: Story archive — grid of previously saved story cards.
+
+#### Digital Elder Page
+- **Left panel (40%)**: 3D avatar canvas (TalkingHead). Full-height, dark background. Avatar should be prominent — this is the wow factor.
+- **Right panel (60%)**: Chat interface. Dark chat bubbles for elder responses, lighter for user. Indigenous vocabulary terms highlighted with emerald accent underline + tooltip on hover. Knowledge panel below chat showing retrieved source documents.
+- **Chat input**: Full-width text input with send button. Optional: microphone button for voice input.
+
+#### Pronunciation Lab Page
+- **Center layout**: Avatar on top, phrase card in middle, pronunciation meter below.
+- **Phrase card**: Indigenous phrase in large text, romanized pronunciation guide, English/Malay meaning. "Listen" button (avatar speaks it), "Try it" button (user records).
+- **Pronunciation meter**: Animated circular gauge showing accuracy %. Color-coded (red → yellow → green).
+- **Progress tracker**: Sidebar showing streak,  words mastered, accuracy trend.
+
+---
+
+## 13. 16-Hour Sprint Timeline
+
+| Hour | Task | Owner | Feature | Deliverable |
+|------|------|-------|---------|-------------|
+| **0–1** | Vite + React scaffold, Tailwind, React Router, Firebase init, `.env` | Dev 1 | Setup | Running dev server with routing |
+| **0–1** | Ready Player Me avatar creation + GLB download + Mixamo FBX downloads | Dev 2 | Avatar | Avatar assets ready in `/public` |
+| **1–2** | TalkingHead.js integration + ElevenLabs WebSocket lip-sync proof-of-concept | Dev 2 | Avatar | Avatar speaks and lip-syncs |
+| **1–2** | `gemini.js` service (transcribe, translate, scenes, illustrations, embed) + `elevenlabs.js` service | Dev 1 | Services | All API wrappers tested |
+| **2–4** | AudioRecorder component (waveform viz) + Gemini transcription + translation pipeline | Dev 1 | StoryWeaver | Record → transcribe → translate working |
+| **2–4** | ChatUI (ChatBubble, ChatInput) + AvatarCanvas component + DigitalElder page layout | Dev 2 | Digital Elder | Chat interface + avatar rendered |
+| **4–6** | Scene splitting + Imagen 3 illustration generation + PipelineProgress component | Dev 1 | StoryWeaver | Illustrations generating per scene |
+| **4–6** | Seed knowledge base (30–50 entries) + Firestore vector search + RAG pipeline | Dev 2 | Digital Elder | RAG answering questions from knowledge base |
+| **6–7** | ElevenLabs narration per scene + EBookViewer assembly | Dev 1 | StoryWeaver | Full e-book with text + images + audio |
+| **6–7** | Vocabulary injection (`[word\|meaning]` parsing) + VocabHighlight component | Dev 2 | Digital Elder | Highlighted indigenous terms in chat |
+| **7–9** | Archive stories → Firestore + feed into Digital Elder knowledge base | Both | Integration | Stories become RAG-searchable |
+| **9–11** | Error handling, loading states, fallback caching, edge cases | Both | Polish | Robust demo-ready features |
+| **11–13** | Landing page: hero, feature cards, Framer Motion animations, responsive | Dev 2 | Polish | Beautiful landing page |
+| **11–13** | Pronunciation Lab (stretch): phrase display + Gemini eval + scoring meter | Dev 1 | Stretch | Basic pronunciation feature |
+| **13–14** | Full integration test, cross-browser, mobile responsive check | Both | QA | All features working together |
+| **14–16** | Demo rehearsal (minimum 3 full run-throughs), fix issues, pre-cache demo data | Both | Demo | Polished 3-minute demo |
+
+---
+
+## 14. Demo Script (3 minutes)
+
+| Timestamp | Beat | Script |
+|-----------|------|--------|
+| **0:00–0:25** | **Hook** | "Every two weeks, an indigenous language dies forever. Southeast Asia is home to over 500 languages at risk. We built EchoRoots to fight back — using AI to preserve voices before they're lost." |
+| **0:25–0:45** | **Meet the Elder** | Navigate to Digital Elder page. 3D avatar loads — blinks, breathes, shifts weight. "Meet our Digital Elder — an AI guardian powered by real indigenous knowledge." |
+| **0:45–1:30** | **StoryWeaver Live** | Switch to StoryWeaver. Team member speaks a pre-prepared 30-second folktale. Show real-time pipeline: transcription → translation → AI illustrations appearing → bilingual e-book assembled. **This is the money shot.** |
+| **1:30–2:15** | **Digital Elder Q&A** | Return to Digital Elder. Type: "What plant treats headaches in Semai tradition?" Avatar lip-syncs the answer. Vocabulary highlights appear. "Every answer is grounded in verified indigenous knowledge — not hallucinated." |
+| **2:15–2:45** | **Pronunciation Lab** | Quick demo: avatar speaks a Semai phrase. User attempts it. Score: 82%. Tips shown. "Making language learning interactive and fun." |
+| **2:45–3:00** | **Close** | "Every elder who passes takes a library with them. EchoRoots ensures their voice echoes forever." Show growing story archive. |
+
+---
+
+## 15. Risk Matrix & Mitigation
+
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Avatar GLB fails to load | Low | High | Pre-record a video of avatar working. Show video + explain pipeline. |
+| ElevenLabs quota or latency | Medium | Medium | Fall back to browser `SpeechSynthesis` API. Less impressive but functional. |
+| Imagen 3 slow (>10s/image) | Medium | Medium | Pre-cache one complete StoryWeaver run. Show cached result + explain live pipeline. |
+| Venue WiFi dies | Medium | Critical | Pre-load everything in Firestore offline cache. Use cached demo experience. |
+| Pronunciation eval unreliable | High | Low | Skip feature entirely. StoryWeaver + Digital Elder is already winning. |
+| Gemini API rate limit | Low | High | Request queuing + exponential backoff + cache all demo responses in localStorage. |
+| TalkingHead lib issues | Low | High | Static avatar image + ElevenLabs audio playing separately. |
+| Firestore vector search inaccuracy | Medium | Medium | Tune vector similarity threshold. Fall back to keyword search. |
+| Browser MediaRecorder incompatibility | Low | Medium | Test on Chrome/Edge. Provide pre-recorded audio fallback. |
+
+---
+
+## 16. Environment Setup (Zero to Running)
+
+```bash
+# 1. Create project from scratch
+npm create vite@latest ./ -- --template react
+# (Run this inside the c:\echoRoots_webapp directory)
+
+# 2. Install core dependencies
+npm install react-router-dom zustand framer-motion
+npm install firebase
+npm install @google/generative-ai
+
+# 3. Install Tailwind CSS (v4 with Vite plugin)
+npm install -D tailwindcss @tailwindcss/vite
+
+# 4. Configure Vite for Tailwind (vite.config.js)
+# Add @tailwindcss/vite plugin — see file structure section
+
+# 5. Set up CSS entry (src/index.css)
+# Add: @import "tailwindcss";
+
+# 6. TalkingHead setup
+# Download from: https://github.com/met4citizen/TalkingHead
+# Copy talkinghead.mjs + modules/ directory to public/talkinghead/
+
+# 7. Ready Player Me avatar
+# Go to https://readyplayer.me → Create elder character → Export GLB
+# Download URL with: ?morphTargets=ARKit,Oculus+Visemes&textureAtlas=1024
+# Save to: public/models/elder-avatar.glb
+
+# 8. Mixamo animations
+# Go to https://www.mixamo.com
+# Search: "Idle", "Talking", "Greeting"
+# Download each as FBX → Save to public/animations/
+
+# 9. Create .env file
+# VITE_GEMINI_API_KEY=your_key_here
+# VITE_ELEVENLABS_API_KEY=your_key_here
+# VITE_ELEVENLABS_VOICE_ID=your_voice_id_here
+
+# 10. Firebase setup
+# Create project at https://console.firebase.google.com
+# Enable: Firestore Database, Firebase Storage
+# Copy web app config to src/services/firebase.js
+# Create Firestore vector index for knowledge_base collection
+
+# 11. Start development
+npm run dev
+```
+
+---
+
+## Proposed Changes Summary
+
+Since this is a greenfield project, all files will be **[NEW]**. The full implementation will be built incrementally following the sprint timeline.
+
+### Project Scaffold
+
+#### [NEW] [package.json](file:///c:/echoRoots_webapp/package.json)
+Vite React project with all dependencies listed in tech stack.
+
+#### [NEW] [vite.config.js](file:///c:/echoRoots_webapp/vite.config.js)
+Vite config with `@tailwindcss/vite` plugin.
+
+#### [NEW] [index.html](file:///c:/echoRoots_webapp/index.html)
+HTML entry with Google Fonts (Outfit, Inter, JetBrains Mono), meta tags, root div.
+
+#### [NEW] [.env](file:///c:/echoRoots_webapp/.env)
+Environment variables template for API keys.
+
+---
+
+### Styling & Entry
+
+#### [NEW] [src/index.css](file:///c:/echoRoots_webapp/src/index.css)
+Tailwind directives, custom CSS custom properties for theme tokens, base styles, scrollbar styling.
+
+#### [NEW] [src/main.jsx](file:///c:/echoRoots_webapp/src/main.jsx)
+React entry point — renders `<App />` into `#root`.
+
+#### [NEW] [src/App.jsx](file:///c:/echoRoots_webapp/src/App.jsx)
+React Router setup with `AnimatePresence` for page transitions. Routes: `/` (Home), `/storyweaver`, `/digital-elder`, `/pronunciation-lab`.
+
+---
+
+### Services Layer
+
+#### [NEW] [src/services/gemini.js](file:///c:/echoRoots_webapp/src/services/gemini.js)
+All Gemini API calls: transcription, translation, scene splitting, illustration, embedding, RAG response, pronunciation evaluation.
+
+#### [NEW] [src/services/elevenlabs.js](file:///c:/echoRoots_webapp/src/services/elevenlabs.js)
+ElevenLabs TTS REST and WebSocket connections.
+
+#### [NEW] [src/services/avatar.js](file:///c:/echoRoots_webapp/src/services/avatar.js)
+TalkingHead.js wrapper: init, speak, stop, animation control.
+
+#### [NEW] [src/services/rag.js](file:///c:/echoRoots_webapp/src/services/rag.js)
+RAG pipeline: embed → vector search → context assembly → generation.
+
+#### [NEW] [src/services/firebase.js](file:///c:/echoRoots_webapp/src/services/firebase.js)
+Firebase initialization (Firestore + Storage).
+
+#### [NEW] [src/services/storyPipeline.js](file:///c:/echoRoots_webapp/src/services/storyPipeline.js)
+Full StoryWeaver orchestration with progress callbacks.
+
+---
+
+### State Management
+
+#### [NEW] [src/stores/appStore.js](file:///c:/echoRoots_webapp/src/stores/appStore.js)
+Zustand store with session, pipeline, chat, avatar, archive, and pronunciation slices.
+
+---
+
+### Pages
+
+#### [NEW] [src/pages/Home.jsx](file:///c:/echoRoots_webapp/src/pages/Home.jsx)
+Landing page: hero with animated background, feature cards with stagger animation, stats bar, CTA.
+
+#### [NEW] [src/pages/StoryWeaver.jsx](file:///c:/echoRoots_webapp/src/pages/StoryWeaver.jsx)
+Full StoryWeaver pipeline: recorder → progress → e-book viewer.
+
+#### [NEW] [src/pages/DigitalElder.jsx](file:///c:/echoRoots_webapp/src/pages/DigitalElder.jsx)
+Split layout: 3D avatar + chat interface + knowledge panel.
+
+#### [NEW] [src/pages/PronunciationLab.jsx](file:///c:/echoRoots_webapp/src/pages/PronunciationLab.jsx)
+Language tutor: phrase display + record + evaluation + scoring.
+
+---
+
+### Components
+
+#### [NEW] [src/components/Navbar.jsx](file:///c:/echoRoots_webapp/src/components/Navbar.jsx)
+Navigation with active route highlighting, logo, responsive mobile menu.
+
+#### [NEW] [src/components/AvatarCanvas.jsx](file:///c:/echoRoots_webapp/src/components/AvatarCanvas.jsx)
+TalkingHead integration wrapper: container, loading state, error boundary.
+
+#### [NEW] [src/components/AudioRecorder.jsx](file:///c:/echoRoots_webapp/src/components/AudioRecorder.jsx)
+MediaRecorder + Web Audio API waveform visualization.
+
+#### [NEW] [src/components/PipelineProgress.jsx](file:///c:/echoRoots_webapp/src/components/PipelineProgress.jsx)
+Vertical stepper showing pipeline stages with animated indicators.
+
+#### [NEW] [src/components/EBookViewer.jsx](file:///c:/echoRoots_webapp/src/components/EBookViewer.jsx)
+Bilingual e-book layout: original + translation + illustration + audio per scene.
+
+#### [NEW] [src/components/StoryCard.jsx](file:///c:/echoRoots_webapp/src/components/StoryCard.jsx)
+Story archive card with thumbnail, title, language badge.
+
+#### [NEW] [src/components/ChatBubble.jsx](file:///c:/echoRoots_webapp/src/components/ChatBubble.jsx)
+Chat message display with vocab highlighting.
+
+#### [NEW] [src/components/ChatInput.jsx](file:///c:/echoRoots_webapp/src/components/ChatInput.jsx)
+Text input with send button.
+
+#### [NEW] [src/components/VocabHighlight.jsx](file:///c:/echoRoots_webapp/src/components/VocabHighlight.jsx)
+Indigenous word inline highlight with tooltip showing meaning.
+
+#### [NEW] [src/components/PronunciationMeter.jsx](file:///c:/echoRoots_webapp/src/components/PronunciationMeter.jsx)
+Animated circular gauge for pronunciation accuracy.
+
+#### [NEW] [src/components/AudioPlayer.jsx](file:///c:/echoRoots_webapp/src/components/AudioPlayer.jsx)
+Reusable audio player with play/pause, progress bar.
+
+#### [NEW] [src/components/LoadingSpinner.jsx](file:///c:/echoRoots_webapp/src/components/LoadingSpinner.jsx)
+Shared animated loading indicator.
+
+---
+
+### Hooks
+
+#### [NEW] [src/hooks/useAudioRecorder.js](file:///c:/echoRoots_webapp/src/hooks/useAudioRecorder.js)
+MediaRecorder + AnalyserNode hook with waveform data.
+
+#### [NEW] [src/hooks/useSpeechRecognition.js](file:///c:/echoRoots_webapp/src/hooks/useSpeechRecognition.js)
+Web Speech API wrapper hook.
+
+#### [NEW] [src/hooks/useStoryPipeline.js](file:///c:/echoRoots_webapp/src/hooks/useStoryPipeline.js)
+Pipeline orchestration hook connecting service layer to Zustand state.
+
+---
+
+### Utilities & Data
+
+#### [NEW] [src/utils/vocabParser.js](file:///c:/echoRoots_webapp/src/utils/vocabParser.js)
+Regex parser for `[word|meaning]` format from Gemini responses.
+
+#### [NEW] [src/utils/audioUtils.js](file:///c:/echoRoots_webapp/src/utils/audioUtils.js)
+Blob ↔ Base64, audio format conversion helpers.
+
+#### [NEW] [src/data/seedKnowledge.json](file:///c:/echoRoots_webapp/src/data/seedKnowledge.json)
+30–50 pre-built cultural knowledge entries covering multiple categories and tribes.
+
+---
+
+## Verification Plan
+
+### Automated Checks (during development)
+
+1. **Dev server starts without errors**:
+   ```bash
+   cd c:\echoRoots_webapp && npm run dev
+   ```
+   Verify: Vite compiles, page loads at `http://localhost:5173`
+
+2. **Production build succeeds**:
+   ```bash
+   cd c:\echoRoots_webapp && npm run build
+   ```
+   Verify: No build errors, `dist/` folder created
+
+3. **Route navigation works**: Open browser, verify all 4 routes (`/`, `/storyweaver`, `/digital-elder`, `/pronunciation-lab`) render without errors.
+
+### Browser Testing (via browser tool)
+
+1. Navigate to `http://localhost:5173` — verify landing page renders with hero section, feature cards, navigation
+2. Navigate to each route — verify page transitions animate smoothly
+3. Verify responsive layout at mobile viewport widths
+4. Verify all interactive elements have unique IDs
+
+### Manual Verification (requires API keys)
+
+> [!IMPORTANT]
+> The following tests require valid API keys in `.env`. These should be tested by the user/team with their own keys:
+
+1. **StoryWeaver pipeline**: Record audio → verify transcription → translation → illustrations → narration → e-book assembly
+2. **Digital Elder**: Type a question → verify RAG retrieval → avatar lip-syncs response → vocab terms highlighted
+3. **Pronunciation Lab**: Listen to phrase → record pronunciation → verify score and feedback
+4. **Avatar loading**: Verify GLB avatar loads, idle animation plays, lip-sync works with ElevenLabs
+
+### Pre-Demo Cache Verification
+
+1. Verify at least one complete StoryWeaver run is cached and can be shown without API calls
+2. Verify at least 3 Digital Elder Q&A pairs are pre-cached
+3. Test offline mode with Firestore cache enabled

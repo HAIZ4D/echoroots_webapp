@@ -1,0 +1,37 @@
+# EchoRoots — Implementation Progress
+
+## Planning Phase
+- [x] Create comprehensive implementation plan document
+- [x] Get user review & approval
+
+## Execution Phase
+- [x] Project scaffold (Vite + React + Tailwind + dependencies)
+- [x] Core services layer (Gemini, ElevenLabs, Firebase, Avatar, RAG, StoryPipeline)
+- [x] Zustand store with all state slices
+- [x] Hooks (useAudioRecorder, useSpeechRecognition, useStoryPipeline)
+- [x] Utilities (vocabParser, audioUtils)
+- [x] Seed knowledge data (30 cultural entries)
+- [x] Shared components (Navbar, LoadingSpinner, AudioPlayer, VocabHighlight)
+- [x] Chat components (ChatBubble, ChatInput)
+- [x] StoryWeaver components (AudioRecorder, PipelineProgress, EBookViewer, StoryCard)
+- [x] Avatar & Pronunciation components (AvatarCanvas, PronunciationMeter)
+- [x] Home page (hero, particles, feature cards, stats, CTA)
+- [x] StoryWeaver page (recorder + pipeline + e-book viewer)
+- [x] Digital Elder page (avatar + RAG chat)
+- [x] Pronunciation Lab page (phrase cards + evaluation + progress)
+
+## Verification
+- [x] Dev server runs without compilation errors
+- [x] All 4 routes load in browser
+- [x] Production build succeeds
+- [x] Avatar fallback works gracefully when TalkingHead not present
+
+## Remaining Setup
+- [x] Add API keys to [.env](file:///c:/echoRoots_webapp/.env) (Gemini, ElevenLabs)
+- [x] Set up Firebase project
+- [x] Integrate Firebase config into project
+- [x] Download TalkingHead.js to `public/talkinghead/`
+- [x] Provide fallback avatar (`public/models/elder-avatar.glb`)
+- [x] Add Mixamo animations (`public/animations/`)
+- [ ] Seed Firestore knowledge base (via console `await window.seedDB()`)
+- [x] Update `.env` with Firebase config vars
