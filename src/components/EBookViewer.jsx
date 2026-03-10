@@ -9,9 +9,11 @@ export default function EBookViewer({ scenes, transcription, language, translati
 
     const scene = scenes[currentPage]
     const totalPages = scenes.length
-    const imageUrl = scene.imageBase64
-        ? `data:${scene.imageMimeType || 'image/jpeg'};base64,${scene.imageBase64}`
-        : null
+    // imageUrl: prefer Storage URL (persisted), fall back to in-memory base64 (just created)
+    const imageUrl = scene.imageUrl
+        || (scene.imageBase64
+            ? `data:${scene.imageMimeType || 'image/jpeg'};base64,${scene.imageBase64}`
+            : null)
     const lang = (language || 'Indigenous').charAt(0).toUpperCase() + (language || 'Indigenous').slice(1)
 
     return (

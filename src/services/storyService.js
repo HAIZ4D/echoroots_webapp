@@ -1,24 +1,58 @@
-import { db } from './firebase'
+import { db, storage } from './firebase'
 import { collection, doc, setDoc, getDocs, orderBy, query, limit } from 'firebase/firestore'
+import { ref, uploadString, getDownloadURL } from 'firebase/storage'
+
+/**
+ * Upload a single scene image to Firebase Storage.
+ * Returns the public download URL.
+ */
+async function uploadSceneImage(storyId, sceneNumber, base64, mimeType) {
+    const ext = (mimeType || '').includes('png') ? 'png' : 'jpg'
+    const storageRef = ref(storage, `stories/${storyId}/scene-${sceneNumber}.${ext}`)
+    await uploadString(storageRef, base64, 'base64', { contentType: mimeType || 'image/jpeg' })
+    return getDownloadURL(storageRef)
+}
 
 /**
  * Save a story to Firestore using the supplied docId so the same UUID is used
  * in both Zustand (local) and Firestore — enabling clean deduplication in the
  * merged library view.
  *
- * Images are stored inline. If the doc exceeds 850 KB, images are removed from
- * the last scene backwards until it fits inside Firestore's 1 MB limit.
+ * Scene images are uploaded to Firebase Storage and stored as download URLs
+ * in Firestore — no base64 blobs, no 1 MB document size limit.
  */
 export async function saveStoryToFirestore(story, docId) {
-    const scenes = (story.scenes || []).map((scene, i) => ({
-        sceneNumber: scene.sceneNumber || i + 1,
-        originalText: scene.originalText || scene.text || '',
-        translationEn: scene.translationEn || scene.translation || '',
-        translationMs: scene.translationMs || '',
-        culturalNote: scene.culturalNote || '',
-        imageBase64: scene.imageBase64 || null,
-        imageMimeType: scene.imageMimeType || 'image/png',
-    }))
+    const id = docId || doc(collection(db, 'stories')).id
+
+    // Upload all scene images to Storage in parallel
+    const scenes = await Promise.all(
+        (story.scenes || []).map(async (scene, i) => {
+            let imageUrl = scene.imageUrl || null
+
+            if (scene.imageBase64 && !imageUrl) {
+                try {
+                    imageUrl = await uploadSceneImage(
+                        id,
+                        scene.sceneNumber || i + 1,
+                        scene.imageBase64,
+                        scene.imageMimeType || 'image/jpeg'
+                    )
+                } catch (err) {
+                    console.warn(`[StoryService] Image upload failed for scene ${i + 1}:`, err.message)
+                }
+            }
+
+            return {
+                sceneNumber: scene.sceneNumber || i + 1,
+                originalText: scene.originalText || scene.text || '',
+                translationEn: scene.translationEn || scene.translation || '',
+                translationMs: scene.translationMs || '',
+                culturalNote: scene.culturalNote || '',
+                imageUrl,          // Storage URL — persists across sessions
+                imageMimeType: scene.imageMimeType || 'image/jpeg',
+            }
+        })
+    )
 
     const firestoreDoc = {
         title: story.title || (story.transcription?.substring(0, 60) || 'Untitled') + '...',
@@ -30,19 +64,9 @@ export async function saveStoryToFirestore(story, docId) {
         createdAt: story.createdAt || new Date().toISOString(),
     }
 
-    // Progressive image removal to stay under 850 KB
-    let size = JSON.stringify(firestoreDoc).length
-    for (let i = scenes.length - 1; i >= 0 && size > 850_000; i--) {
-        firestoreDoc.scenes[i].imageBase64 = null
-        size = JSON.stringify(firestoreDoc).length
-    }
-
-    const ref = docId
-        ? doc(db, 'stories', docId)
-        : doc(collection(db, 'stories'))
-
-    await setDoc(ref, firestoreDoc)
-    return { id: ref.id, ...firestoreDoc }
+    const ref2 = doc(db, 'stories', id)
+    await setDoc(ref2, firestoreDoc)
+    return { id, ...firestoreDoc }
 }
 
 /**
