@@ -11,8 +11,9 @@
 | | |
 |---|---|
 | 🌐 **Live Prototype** | [echoroots-e0420.web.app](https://echoroots-e0420.web.app) |
-| 🎬 **Demo Video** | [youtu.be/y2yLZajA4yw](https://youtu.be/y2yLZajA4yw) |
-| 📄 **Project Report** | *(link to be added)* |
+| 🎬 **Pitch + Demo Video Link** | [youtu.be/y2yLZajA4yw](https://youtu.be/y2yLZajA4yw) |
+| 📄 **Project Report** | [View on Google Drive](https://drive.google.com/file/d/15Uwjq20wp0jmJIyUPtmd3YegqZ83oMKE/view?usp=sharing) |
+| 📊 **Presentation Slides** | [View on Google Drive](https://drive.google.com/file/d/1LTKPLd9EitI9VoMRNP1fixHp_Oe8CFTj/view?usp=sharing) |
 
 ---
 
