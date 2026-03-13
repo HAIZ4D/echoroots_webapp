@@ -17,7 +17,7 @@ const GEMINI_KEY = defineSecret('GEMINI_API_KEY')
 const EL_KEY = defineSecret('ELEVENLABS_API_KEY')
 
 const REGION = 'us-central1'
-const EL_VOICE_DEFAULT = 'pNInz6obpgDQGcFmaJgB'
+const EL_VOICE_DEFAULT = 'EXAVITQu4vr4xnSDxMaL' // Bella — female voice, free tier compatible
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -120,15 +120,15 @@ exports.splitScenes = onCall(
 
         const model = getModel(GEMINI_KEY.value())
         const result = await model.generateContent(
-            `You are an editor for an indigenous cultural storybook. Your job is to faithfully represent the speaker's actual words — do NOT add content, characters, events, or details that are not in the original.
+            `You are a creative editor for an indigenous cultural storybook. Transform the speaker's words into a rich 3-scene visual narrative.
 
 RULES:
-- Use ONLY the content present in the original story text. Do not invent or expand.
-- Split the story into scenes proportional to its length: short story (1–2 sentences) → 1–2 scenes; medium (3–6 sentences) → 2–3 scenes; long (7+ sentences) → up to 5 scenes.
-- Each scene's "text" must be a direct excerpt from the original, not a rewrite.
-- Each scene's "translationEn" must be the corresponding excerpt from the English translation.
-- Each scene's "translationMs" must be the corresponding excerpt from the Bahasa Melayu translation.
-- The image prompt must describe only what is explicitly in that scene's text.
+- ALWAYS produce EXACTLY 3 scenes — no more, no less.
+- If the original is short (1–3 sentences), give each sentence its own scene, enriching the image prompt with vivid cultural atmosphere (lush forest setting, golden light, sounds of nature, emotional mood) while keeping the text faithful to the original.
+- If the original is longer (4+ sentences), group sentences naturally into 3 scenes.
+- Each scene "text" should be the original language portion for that scene.
+- Each scene "translationEn" and "translationMs" must match the corresponding translation excerpt.
+- Image prompts must be vivid, detailed, and painterly — describe lighting, mood, and setting richly.
 
 Original story: "${storyText}"
 English translation: "${englishTranslation}"
@@ -139,10 +139,24 @@ Respond in this exact JSON format:
   "scenes": [
     {
       "sceneNumber": 1,
-      "text": "exact excerpt from original language for this scene",
-      "translationEn": "corresponding excerpt from English translation",
-      "translationMs": "corresponding excerpt from Bahasa Melayu translation",
-      "imagePrompt": "Visual description of only what this scene describes. Style: warm watercolor digital art, Southeast Asian Borneo rainforest, culturally respectful depiction of indigenous Orang Asli life, rich greens and earth tones. No text in the image."
+      "text": "original language excerpt for scene 1",
+      "translationEn": "English excerpt for scene 1",
+      "translationMs": "Bahasa Melayu excerpt for scene 1",
+      "imagePrompt": "Vivid scene 1 description. Style: warm watercolor digital art, Southeast Asian rainforest, culturally respectful depiction of indigenous Orang Asli life, rich greens and earth tones, golden hour light. No text in the image."
+    },
+    {
+      "sceneNumber": 2,
+      "text": "original language excerpt for scene 2",
+      "translationEn": "English excerpt for scene 2",
+      "translationMs": "Bahasa Melayu excerpt for scene 2",
+      "imagePrompt": "Vivid scene 2 description. Style: warm watercolor digital art, Southeast Asian rainforest, culturally respectful depiction of indigenous Orang Asli life, rich greens and earth tones, golden hour light. No text in the image."
+    },
+    {
+      "sceneNumber": 3,
+      "text": "original language excerpt for scene 3",
+      "translationEn": "English excerpt for scene 3",
+      "translationMs": "Bahasa Melayu excerpt for scene 3",
+      "imagePrompt": "Vivid scene 3 description. Style: warm watercolor digital art, Southeast Asian rainforest, culturally respectful depiction of indigenous Orang Asli life, rich greens and earth tones, golden hour light. No text in the image."
     }
   ]
 }
@@ -412,8 +426,11 @@ exports.textToSpeech = onCall(
         const { text, voiceId = EL_VOICE_DEFAULT } = data
         if (!text) throw new HttpsError('invalid-argument', 'text required')
 
-        const apiKey = EL_KEY.value()
-        if (!apiKey) return { audioBase64: null, fallback: true }
+        const apiKey = EL_KEY.value()?.trim()
+        if (!apiKey) {
+            console.error('[ElevenLabs] ELEVENLABS_API_KEY secret is empty or not set. Run: firebase functions:secrets:set ELEVENLABS_API_KEY')
+            return { audioBase64: null, fallback: true }
+        }
 
         const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
             method: 'POST',
@@ -447,43 +464,77 @@ exports.textToSpeech = onCall(
 // ─── 9. speakWithTimestamps (avatar lip-sync) ────────────────────────────────
 
 exports.speakWithTimestamps = onCall(
-    { secrets: [EL_KEY], region: REGION, timeoutSeconds: 30 },
+    { secrets: [EL_KEY], region: REGION, timeoutSeconds: 60 },
     async ({ data }) => {
-        const { text, voiceId = EL_VOICE_DEFAULT } = data
+        const { text } = data
         if (!text) throw new HttpsError('invalid-argument', 'text required')
 
-        const apiKey = EL_KEY.value()
-        if (!apiKey) return { audioBase64: null, fallback: true }
-
-        const res = await fetch(
-            `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/with-timestamps`,
-            {
-                method: 'POST',
-                headers: {
-                    'xi-api-key': apiKey,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    text,
-                    model_id: 'eleven_multilingual_v2',
-                    voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-                }),
-            }
-        )
-
-        if (res.status === 401) {
-            console.warn('[ElevenLabs] speakWithTimestamps key invalid')
-            return { audioBase64: null, fallback: true, keyInvalid: true }
-        }
-        if (!res.ok) {
-            console.warn('[ElevenLabs] speakWithTimestamps error:', res.status)
+        const apiKey = EL_KEY.value()?.trim()
+        if (!apiKey) {
+            console.error('[ElevenLabs] ELEVENLABS_API_KEY secret is empty or not set. Run: firebase functions:secrets:set ELEVENLABS_API_KEY')
             return { audioBase64: null, fallback: true }
         }
 
-        const result = await res.json()
-        return {
-            audioBase64: result.audio_base64,
-            alignment: result.alignment,
+        // Use voiceId from request if provided, else fall back to default (Rachel)
+        const { voiceId: requestedVoiceId } = data
+        const voiceId = requestedVoiceId || EL_VOICE_DEFAULT
+        const headers = { 'xi-api-key': apiKey, 'Content-Type': 'application/json' }
+        // eleven_multilingual_v2 is available on ALL plans including free tier.
+        // eleven_turbo_v2_5 requires a paid plan — do NOT use on free tier accounts.
+        const ttsBody = JSON.stringify({
+            text,
+            model_id: 'eleven_multilingual_v2',
+            voice_settings: { stability: 0.5, similarity_boost: 0.75 },
+        })
+
+        // Tier 1: with-timestamps — full lip-sync (requires Creator plan)
+        try {
+            const res = await fetch(
+                `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/with-timestamps`,
+                { method: 'POST', headers, body: ttsBody }
+            )
+            if (res.status === 401) {
+                // 401 on /with-timestamps means this endpoint needs a higher plan — DO NOT bail out.
+                // Fall through to Tier 2 (regular TTS) which works on free tier.
+                console.warn('[ElevenLabs] with-timestamps 401 — endpoint requires Creator plan. Falling back to regular TTS.')
+            } else if (res.ok) {
+                const result = await res.json()
+                if (result.audio_base64) {
+                    console.log('[ElevenLabs] with-timestamps succeeded')
+                    return { audioBase64: result.audio_base64, alignment: result.alignment }
+                }
+            } else {
+                const errText = await res.text().catch(() => String(res.status))
+                console.warn('[ElevenLabs] with-timestamps failed:', res.status, errText.slice(0, 300))
+            }
+        } catch (e) {
+            console.warn('[ElevenLabs] with-timestamps error:', e.message)
         }
+
+        // Tier 2: regular TTS — works on all plans including free tier
+        try {
+            const res2 = await fetch(
+                `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+                { method: 'POST', headers, body: ttsBody }
+            )
+            if (res2.status === 401) {
+                const body = await res2.text().catch(() => '')
+                console.error('[ElevenLabs] 401 on regular TTS — API key truly invalid:', body.slice(0, 300))
+                return { audioBase64: null, fallback: true, keyInvalid: true }
+            }
+            if (res2.ok) {
+                const buffer = await res2.arrayBuffer()
+                const audioBase64 = Buffer.from(buffer).toString('base64')
+                console.log('[ElevenLabs] Regular TTS succeeded — ElevenLabs voice active')
+                return { audioBase64, mimeType: 'audio/mpeg' }
+            }
+            const errText2 = await res2.text().catch(() => res2.status)
+            console.warn('[ElevenLabs] Regular TTS failed:', res2.status, typeof errText2 === 'string' ? errText2.slice(0, 300) : errText2)
+        } catch (e) {
+            console.warn('[ElevenLabs] Regular TTS error:', e.message)
+        }
+
+        return { audioBase64: null, fallback: true }
     }
 )
+

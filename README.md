@@ -1,8 +1,18 @@
 <div align="center">
 
-# 🌿 EchoRoots: Echoing Ancestral Voices Into The Digital Future
+# 🌿 EchoRoots: Echoing Ancestral Voices into the Digital Future
 
 ### *Preserving the Oral Heritage of Southeast Asian Orang Asli Communities*
+
+---
+
+### 🔗 Links
+
+| | |
+|---|---|
+| 🌐 **Live Prototype** | [echoroots-e0420.web.app](https://echoroots-e0420.web.app) |
+| 🎬 **Demo Video** | [youtu.be/y2yLZajA4yw](https://youtu.be/y2yLZajA4yw) |
+| 📄 **Project Report** | *(link to be added)* |
 
 ---
 
@@ -152,7 +162,7 @@ flowchart TD
 
 | Source | Contents | Used By |
 |---|---|---|
-| `src/data/seedKnowledge.json` | 30 curated entries — Semai, Temiar, Jakun traditions, medicine, ceremonies, governance | Digital Elder RAG |
+| `src/data/seedKnowledge.json` | 98 curated entries — Semai, Temiar, Jakun, Batek, Mah Meri, Che Wong traditions, medicine, ceremonies, governance, language, folklore | Digital Elder RAG |
 | `src/pages/PronunciationLab.jsx` | 10 indigenous phrases with phonetic guides | Pronunciation Lab |
 | Firestore `vocabulary` collection | Indigenous word entries with meanings and cultural context | Future vocabulary expansion |
 
@@ -195,8 +205,8 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 VITE_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
 
-# ElevenLabs voice ID (not a secret — just a voice selection)
-VITE_ELEVENLABS_VOICE_ID=pNInz6obpgDQGcFmaJgB
+# ElevenLabs voice ID (Bella — free tier compatible female voice)
+VITE_ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL
 ```
 
 > **Where to find Firebase config:** Firebase Console → Project Settings → Your apps → Web app config
@@ -267,9 +277,9 @@ The app runs at **http://localhost:5173**
 await window.seedDB()
 ```
 
-4. Wait for: `Seeding finished. Items added: 30`
+4. Wait for: `Seeded 98/98 entries...`
 
-The Digital Elder is now powered by **30 verified cultural knowledge entries** covering Semai, Temiar, and Jakun traditions, language, medicine, and ceremonies.
+The Digital Elder is now powered by **98 verified cultural knowledge entries** covering Semai, Temiar, Jakun, Batek, Mah Meri, and Che Wong traditions, language, medicine, folklore, and ceremonies.
 
 ---
 
@@ -324,7 +334,7 @@ Used for all language understanding and reasoning tasks (called server-side via 
 
 ### Firebase
 
-- **Firestore** — Stores 30 curated knowledge entries for RAG retrieval, persists completed storybooks
+- **Firestore** — Stores 98 curated knowledge entries for RAG retrieval, persists completed storybooks
 - **Storage** — Hosts story illustration images with permanent download URLs
 
 ### Browser APIs *(no external AI)*
@@ -412,22 +422,19 @@ Used for all language understanding and reasoning tasks (called server-side via 
 
 ### Recommended Test Sentences for StoryWeaver
 
-> **Note:** StoryWeaver is designed for Orang Asli speakers recording in their native language. If you are a judge who does not speak an indigenous language, the Bahasa Melayu or English examples below will still demonstrate the full pipeline.
+> **Note:** These are authentic Semai sentences for judges to record and test the full pipeline — transcription, translation, scene splitting, illustration, and narration.
 
 ---
 
-**Bahasa Melayu — closest to authentic use case (~60 seconds):**
-> *"Pada zaman dahulu, orang Semai percaya bahawa setiap pokok di hutan mempunyai roh sendiri. Apabila mereka menebang pokok, mereka akan meminta maaf dan mengucapkan terima kasih kepada roh tersebut. Amalan ini diwarisi turun-temurun sebagai tanda hormat kepada alam semula jadi."*
+**Semai sentences to speak aloud:**
+
+> *"Eng an cip sekolah. Eng an jug rumah. Cak entoi di dewan."*
+
+**Meaning:** "I go to school. I stay at home. We meet in the hall."
 
 ---
 
-**Short English — fast pipeline, good for quick demo (~30 seconds):**
-> *"Long ago, in the forest of the Semai people, there lived a wise old man who could speak to the trees. Every morning he walked to the river to give thanks for the water."*
-
----
-
-**Full legend — 3–4 scenes, most impressive result (~90 seconds):**
-> *"In the beginning, the Orang Asli say, the earth and sky were one. Then the great hornbill spread its wings and pushed them apart, creating space for the forests and rivers. That is why the hornbill is sacred — it carries the weight of creation in its feathers. The elders teach children to never harm a hornbill, for it is our ancestor watching over us."*
+Speak these three sentences clearly into the microphone. The pipeline will transcribe them in Semai, translate to English and Bahasa Melayu, split into 3 scenes, generate illustrations, and narrate each scene.
 
 ---
 
@@ -450,6 +457,9 @@ What trees are sacred to the Semai?
 
 | Phrase | Language | Meaning | Phonetic Guide |
 |---|---|---|---|
+| Eng an cip sekolah | Semai | I go to school | ENG an CIP seh-KOH-lah |
+| Eng an jug rumah | Semai | I stay at home | ENG an JUG roo-MAH |
+| Cak entoi di dewan | Semai | We meet in the hall | CHAK en-TOY dee DEH-wan |
 | Sema nyen? | Semai | What is your name? | SEH-mah NYEN |
 | Hay deh! | Temiar | Hello! | HAY DEH |
 | Sey noh deh? | Temiar | How are you? | SAY NOH DEH |
@@ -457,7 +467,6 @@ What trees are sacred to the Semai?
 | Senroi | Semai | Respect for nature | SEN-ROY |
 | Tolak bala | Semai | Ward off evil | TOH-lahk BAH-lah |
 | Naah | Semai | One | NAH |
-| Baar | Semai | Two | BAR |
 
 ---
 
@@ -482,7 +491,7 @@ echoroots-webapp/
 │   │   ├── Navbar.jsx
 │   │   └── Footer.jsx
 │   ├── data/
-│   │   └── seedKnowledge.json    # 30 curated Orang Asli knowledge entries
+│   │   └── seedKnowledge.json    # 98 curated Orang Asli knowledge entries
 │   ├── hooks/
 │   │   ├── useAudioRecorder.js   # Recording, waveform, speech detection
 │   │   ├── useStoryPipeline.js   # Pipeline orchestration + Zustand bridge
@@ -535,6 +544,6 @@ EchoRoots was built with deep respect for the **Semai**, **Temiar**, and **Jakun
 
 *"Every word, every whispered story, every cultural tradition deserves to echo through time."*
 
-**🌿 EchoRoots: Echoing Ancestral Voices Into The Digital Future**
+**🌿 EchoRoots: Echoing Ancestral Voices into the Digital Future**
 
 </div>

@@ -39,16 +39,44 @@ export async function textToSpeech(text, voiceId = VOICE_ID) {
 
 /**
  * Browser SpeechSynthesis fallback when ElevenLabs is unavailable.
+ * Tries to pick a female voice; raises pitch if none found.
  */
 function fallbackTTS(text) {
     return new Promise((resolve) => {
         const utterance = new SpeechSynthesisUtterance(text)
-        utterance.rate = 0.9
-        utterance.pitch = 0.8
+        utterance.rate = 0.88
+        utterance.lang = 'en-US'
 
-        speechSynthesis.speak(utterance)
+        const applyVoice = () => {
+            const voices = speechSynthesis.getVoices()
+            // Prefer voices with 'female' in name, or common female voice names
+            const femaleKeywords = ['female', 'woman', 'girl', 'zira', 'hazel', 'susan', 'samantha', 'victoria', 'karen', 'moira', 'fiona', 'sara', 'heera']
+            const femaleVoice = voices.find(v =>
+                femaleKeywords.some(k => v.name.toLowerCase().includes(k)) && v.lang.startsWith('en')
+            ) || voices.find(v => v.lang.startsWith('en') && v.name.includes('Female'))
+              || voices.find(v => v.lang.startsWith('en'))
+
+            if (femaleVoice) {
+                utterance.voice = femaleVoice
+                utterance.pitch = 1.1
+            } else {
+                // No female voice found — raise pitch to sound more feminine
+                utterance.pitch = 1.3
+            }
+
+            speechSynthesis.speak(utterance)
+        }
+
+        const voices = speechSynthesis.getVoices()
+        if (voices.length > 0) {
+            applyVoice()
+        } else {
+            // Voices not yet loaded — wait for them
+            speechSynthesis.onvoiceschanged = () => applyVoice()
+        }
 
         utterance.onend = () => resolve({ audioBlob: null, audioUrl: null, fallback: true })
         utterance.onerror = () => resolve({ audioBlob: null, audioUrl: null, fallback: true, error: 'Speech synthesis failed' })
     })
 }
+

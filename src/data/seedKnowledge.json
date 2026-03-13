@@ -5,12 +5,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Traditional Semai healing practices",
-        "tags": [
-            "medicine",
-            "plants",
-            "healing",
-            "headache"
-        ]
+        "tags": ["medicine", "plants", "healing", "headache"]
     },
     {
         "content": "The Temiar believe in a spirit world called 'gunik'. Their shamans, known as 'halaq', communicate with spirits through trance-singing ceremonies called 'sewang'. During sewang, the halaq enters a trance state through rhythmic chanting and movement, receiving guidance from the spirit guides.",
@@ -18,12 +13,7 @@
         "language": "temiar",
         "tribe": "Temiar",
         "source": "Temiar spiritual traditions",
-        "tags": [
-            "spirituality",
-            "sewang",
-            "ceremony",
-            "halaq"
-        ]
+        "tags": ["spirituality", "sewang", "ceremony", "halaq"]
     },
     {
         "content": "In Jakun tradition, the 'tok batin' is the village headman who serves as leader, judge, and keeper of customary law (adat). The tok batin is traditionally chosen through consensus and must demonstrate wisdom, fairness, and deep knowledge of adat.",
@@ -31,12 +21,7 @@
         "language": "jakun",
         "tribe": "Jakun",
         "source": "Jakun governance traditions",
-        "tags": [
-            "leadership",
-            "adat",
-            "governance",
-            "tok batin"
-        ]
+        "tags": ["leadership", "adat", "governance", "tok batin"]
     },
     {
         "content": "The Semai practice 'tolak bala', a ritual to drive away bad spirits and misfortune. It involves the preparation of special offerings placed at the edge of the village, accompanied by prayers and incantations from the village elder.",
@@ -44,12 +29,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai protective rituals",
-        "tags": [
-            "ritual",
-            "spirits",
-            "protection",
-            "ceremony"
-        ]
+        "tags": ["ritual", "spirits", "protection", "ceremony"]
     },
     {
         "content": "The blowpipe (sumpit) is the traditional hunting weapon of many Orang Asli groups. Craftsmen select bamboo stalks of the right diameter and straightness, then bore through them using heated iron rods. The darts are carved from palm wood and tipped with the sap of the ipoh tree (Antiaris toxicaria), a natural poison.",
@@ -57,12 +37,7 @@
         "language": "semai",
         "tribe": "Orang Asli (General)",
         "source": "Traditional hunting practices",
-        "tags": [
-            "hunting",
-            "blowpipe",
-            "craftsmanship",
-            "weapons"
-        ]
+        "tags": ["hunting", "blowpipe", "craftsmanship", "weapons"]
     },
     {
         "content": "The Mah Meri people are renowned for their woodcarving traditions. They carve spirit masks called 'moyang' representing ancestral spirits. Each mask has a specific character and is used in the 'jo-oh' dance ceremony to honor ancestors and ensure the community's wellbeing.",
@@ -70,13 +45,7 @@
         "language": "mah_meri",
         "tribe": "Mah Meri",
         "source": "Mah Meri artistic traditions",
-        "tags": [
-            "art",
-            "woodcarving",
-            "masks",
-            "ceremony",
-            "dance"
-        ]
+        "tags": ["art", "woodcarving", "masks", "ceremony", "dance"]
     },
     {
         "content": "The Semai kinship system uses the term 'mai' for mother and 'bah' for father. Extended family is central — 'nek' refers to grandparents, and 'adek' to siblings. The concept of 'senoi' emphasizes peaceful conflict resolution through community discussion rather than violence.",
@@ -84,12 +53,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai family structure",
-        "tags": [
-            "family",
-            "kinship",
-            "language",
-            "social structure"
-        ]
+        "tags": ["family", "kinship", "language", "social structure"]
     },
     {
         "content": "Traditional Temiar houses (rumah) are built on stilts from bamboo and palm leaves. The elevated design protects against flooding and wild animals. The construction is a communal effort, with the entire village participating — reflecting the Temiar principle of gotong-royong (mutual aid).",
@@ -97,12 +61,7 @@
         "language": "temiar",
         "tribe": "Temiar",
         "source": "Temiar architecture",
-        "tags": [
-            "housing",
-            "construction",
-            "bamboo",
-            "community"
-        ]
+        "tags": ["housing", "construction", "bamboo", "community"]
     },
     {
         "content": "An ancient Semai folktale tells of 'Mamak Bonsai', a giant who protected the rainforest. When greedy outsiders tried to cut down the great trees, Mamak Bonsai would shake the earth and summon thunderstorms. The tale teaches children to respect the forest as a living guardian.",
@@ -110,12 +69,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai oral tradition",
-        "tags": [
-            "folktale",
-            "rainforest",
-            "nature",
-            "conservation"
-        ]
+        "tags": ["folktale", "rainforest", "nature", "conservation"]
     },
     {
         "content": "The Jakun people traditionally identify medicinal plants through knowledge passed from elders. 'Tongkat ali' (Eurycoma longifolia) is used for energy and vitality. 'Kacip fatimah' (Labisia pumila) is used by women for health. 'Hempedu bumi' (Andrographis paniculata) treats fever and infections.",
@@ -123,12 +77,7 @@
         "language": "jakun",
         "tribe": "Jakun",
         "source": "Jakun traditional medicine",
-        "tags": [
-            "medicine",
-            "plants",
-            "healing",
-            "herbal"
-        ]
+        "tags": ["medicine", "plants", "healing", "herbal"]
     },
     {
         "content": "The Temiar 'dream songs' (norng) are a unique musical tradition. Temiar musicians receive songs in their dreams from spirit guides. These songs are then performed in village ceremonies and are considered sacred gifts. Each dream song belongs to the person who dreamed it.",
@@ -136,12 +85,7 @@
         "language": "temiar",
         "tribe": "Temiar",
         "source": "Temiar musical traditions",
-        "tags": [
-            "music",
-            "dreams",
-            "ceremony",
-            "songs"
-        ]
+        "tags": ["music", "dreams", "ceremony", "songs"]
     },
     {
         "content": "In Semai belief, the 'nyani' is a thunder deity who punishes those who mock animals or act disrespectfully toward nature. When thunderstorms come, Semai children are taught to cut their finger and offer a small blood offering to the nyani while saying 'sawa sawa' meaning 'forgive us'.",
@@ -149,26 +93,15 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai spiritual beliefs",
-        "tags": [
-            "thunder",
-            "deity",
-            "nature",
-            "respect",
-            "ritual"
-        ]
+        "tags": ["thunder", "deity", "nature", "respect", "ritual"]
     },
     {
-        "content": "The traditional Orang Asli diet includes forest fruits like 'rambutan hutan' (wild rambutan), 'petai' (stink beans from Parkia speciosa), and 'durian'. Protein comes from river fish, small game, and insects. wild honey (madu) is highly valued as both food and medicine.",
+        "content": "The traditional Orang Asli diet includes forest fruits like 'rambutan hutan' (wild rambutan), 'petai' (stink beans from Parkia speciosa), and 'durian'. Protein comes from river fish, small game, and insects. Wild honey (madu) is highly valued as both food and medicine.",
         "category": "skills",
         "language": "semai",
         "tribe": "Orang Asli (General)",
         "source": "Traditional food practices",
-        "tags": [
-            "food",
-            "diet",
-            "foraging",
-            "forest"
-        ]
+        "tags": ["food", "diet", "foraging", "forest"]
     },
     {
         "content": "The Batek people practice a nomadic lifestyle in the Taman Negara rainforest. They build temporary shelters called 'pondok' from palm leaves and bamboo. Their deep knowledge of the forest allows them to navigate using tree patterns, animal sounds, and river systems.",
@@ -176,12 +109,7 @@
         "language": "batek",
         "tribe": "Batek",
         "source": "Batek forest knowledge",
-        "tags": [
-            "nomadic",
-            "rainforest",
-            "navigation",
-            "survival"
-        ]
+        "tags": ["nomadic", "rainforest", "navigation", "survival"]
     },
     {
         "content": "A Temiar greeting goes 'Hay deh!' (Hello!). To ask 'How are you?' they say 'Sey noh deh?' and the common response is 'Baik, baik' meaning 'Good, good.' Parting is said with 'Yok nah' meaning 'I'm going now.' These phrases reflect the warm, informal nature of Temiar social interactions.",
@@ -189,12 +117,7 @@
         "language": "temiar",
         "tribe": "Temiar",
         "source": "Temiar language basics",
-        "tags": [
-            "greetings",
-            "language",
-            "social",
-            "phrases"
-        ]
+        "tags": ["greetings", "language", "social", "phrases"]
     },
     {
         "content": "The Semai weave intricate baskets and mats from rattan and pandanus leaves. Different weaving patterns belong to different families and are passed down mother to daughter. The most skilled weavers can create watertight containers used for cooking and storage.",
@@ -202,12 +125,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai handicrafts",
-        "tags": [
-            "weaving",
-            "baskets",
-            "handicrafts",
-            "rattan"
-        ]
+        "tags": ["weaving", "baskets", "handicrafts", "rattan"]
     },
     {
         "content": "The legend of 'Sang Kelembai' is shared among many Orang Asli groups. She was a giantess who could transform into different animals. She taught the first humans how to find food in the forest, which rivers were safe to drink from, and how to read the weather from cloud patterns.",
@@ -215,12 +133,7 @@
         "language": "semai",
         "tribe": "Orang Asli (General)",
         "source": "Shared Orang Asli mythology",
-        "tags": [
-            "folktale",
-            "mythology",
-            "nature",
-            "teaching"
-        ]
+        "tags": ["folktale", "mythology", "nature", "teaching"]
     },
     {
         "content": "Temiar body painting using 'laka' (a red pigment from the lac insect) is practiced during important ceremonies. The intricate geometric patterns painted on the face and body represent spiritual protection. Each pattern has a specific meaning related to the nature spirits.",
@@ -228,12 +141,7 @@
         "language": "temiar",
         "tribe": "Temiar",
         "source": "Temiar ceremonial practices",
-        "tags": [
-            "body painting",
-            "ceremony",
-            "art",
-            "spiritual"
-        ]
+        "tags": ["body painting", "ceremony", "art", "spiritual"]
     },
     {
         "content": "The concept of 'punan' in Semai culture refers to a feeling of frustrated desire that can cause illness. If someone is denied something they want, they may develop punan — a psychosomatic condition. This concept encourages generosity and sharing within the community.",
@@ -241,12 +149,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai social concepts",
-        "tags": [
-            "social",
-            "health",
-            "sharing",
-            "community"
-        ]
+        "tags": ["social", "health", "sharing", "community"]
     },
     {
         "content": "Traditional Jakun fishing techniques include using 'tuba root' (Derris elliptica) to stun fish in rivers. The root is pounded and released into a dammed section of river. The natural ichthyotoxin temporarily stuns fish, making them easy to collect. This sustainable method only affects a small area and fish recover if not collected.",
@@ -254,12 +157,7 @@
         "language": "jakun",
         "tribe": "Jakun",
         "source": "Jakun fishing traditions",
-        "tags": [
-            "fishing",
-            "river",
-            "sustainable",
-            "skills"
-        ]
+        "tags": ["fishing", "river", "sustainable", "skills"]
     },
     {
         "content": "Orang Asli children learn through observation and play. Young boys accompany their fathers on hunting and foraging trips from age 5-6. Girls learn plant identification, weaving, and food preparation from their mothers. There are no formal 'schools' — the forest itself is the classroom.",
@@ -267,25 +165,15 @@
         "language": "semai",
         "tribe": "Orang Asli (General)",
         "source": "Indigenous education practices",
-        "tags": [
-            "education",
-            "children",
-            "learning",
-            "forest"
-        ]
+        "tags": ["education", "children", "learning", "forest"]
     },
     {
-        "content": "The Semai word 'senroi' means 'fear/respect for nature.' It encapsulates the belief that the natural world is alive with spirits and must be treated with reverence. Before cutting a large tree, Semai people will apologize to the tree's spirit and explain why the wood is needed.",
+        "content": "The Semai word 'senroi' means fear and respect for nature. It encapsulates the belief that the natural world is alive with spirits and must be treated with reverence. Before cutting a large tree, Semai people will apologize to the tree's spirit and explain why the wood is needed.",
         "category": "traditions",
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai environmental philosophy",
-        "tags": [
-            "nature",
-            "respect",
-            "spirituality",
-            "environment"
-        ]
+        "tags": ["nature", "respect", "spirituality", "environment"]
     },
     {
         "content": "The Jah Hut people carve elaborate wooden sculptures of spirits called 'berganda' during healing ceremonies. Each sculpture represents a specific illness-causing spirit that the healer negotiates with. After the ceremony, the sculptures are placed in the forest as offerings.",
@@ -293,12 +181,7 @@
         "language": "jah_hut",
         "tribe": "Jah Hut",
         "source": "Jah Hut healing ceremonies",
-        "tags": [
-            "woodcarving",
-            "healing",
-            "spirits",
-            "ceremony"
-        ]
+        "tags": ["woodcarving", "healing", "spirits", "ceremony"]
     },
     {
         "content": "A Semai counting system: 'naah' (one), 'baar' (two), 'nay' (three), 'pon' (four), 'manasai' (five). Numbers beyond five are formed by combination: 'manasai-naah' (six, literally five-one). This base-five system relates to counting on one hand.",
@@ -306,12 +189,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai language structure",
-        "tags": [
-            "numbers",
-            "language",
-            "counting",
-            "mathematics"
-        ]
+        "tags": ["numbers", "language", "counting", "mathematics"]
     },
     {
         "content": "The annual fruit season (musim buah) is the most important time in the Orang Asli calendar. Families travel to fruit groves inherited through generations. Durian, rambutan, and langsat trees are considered family property, with the rights passed down from parents to children.",
@@ -319,12 +197,7 @@
         "language": "semai",
         "tribe": "Orang Asli (General)",
         "source": "Orang Asli seasonal traditions",
-        "tags": [
-            "fruit season",
-            "inheritance",
-            "food",
-            "family"
-        ]
+        "tags": ["fruit season", "inheritance", "food", "family"]
     },
     {
         "content": "The Temiar use the 'cenoi' (spirit guide) concept in their healing practice. A healer's cenoi is typically an animal spirit — tiger, eagle, or butterfly. During healing ceremonies, the healer channels their cenoi through song, entering a trance to diagnose and treat illness.",
@@ -332,12 +205,7 @@
         "language": "temiar",
         "tribe": "Temiar",
         "source": "Temiar healing traditions",
-        "tags": [
-            "healing",
-            "spirits",
-            "ceremony",
-            "animals"
-        ]
+        "tags": ["healing", "spirits", "ceremony", "animals"]
     },
     {
         "content": "A Semai folktale: 'Why the Tiger Has Stripes.' Long ago, Tiger was plain yellow. He was vain and bullied the smaller animals. One day, Mousedeer tricked Tiger into getting stuck between two bamboo stalks. As Tiger struggled to free himself, the bamboo burned dark stripes into his fur. Since then, Tiger carries the marks of his pride.",
@@ -345,13 +213,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai animal folktales",
-        "tags": [
-            "folktale",
-            "tiger",
-            "animals",
-            "moral",
-            "mousedeer"
-        ]
+        "tags": ["folktale", "tiger", "animals", "moral", "mousedeer"]
     },
     {
         "content": "The traditional Semai musical instrument 'pensol' is a nose flute carved from bamboo. It produces a haunting, breathy tone and is played during quiet evening gatherings. Young men traditionally play the pensol to court young women, with each melody conveying different emotions.",
@@ -359,12 +221,7 @@
         "language": "semai",
         "tribe": "Semai",
         "source": "Semai musical traditions",
-        "tags": [
-            "music",
-            "flute",
-            "bamboo",
-            "courtship"
-        ]
+        "tags": ["music", "flute", "bamboo", "courtship"]
     },
     {
         "content": "The Jakun practice 'berhantu' — a trance healing ceremony where the shaman (bomoh) communicates with spirits to cure illness. The bomoh uses a special 'berjamu' preparation of herbs and prayers. The patient is often treated with herbal pastes applied to the body combined with spiritual incantations.",
@@ -372,13 +229,7 @@
         "language": "jakun",
         "tribe": "Jakun",
         "source": "Jakun spiritual healing",
-        "tags": [
-            "healing",
-            "shaman",
-            "spirits",
-            "herbal",
-            "ceremony"
-        ]
+        "tags": ["healing", "shaman", "spirits", "herbal", "ceremony"]
     },
     {
         "content": "Temiar taboo system includes 'salaad' — things that are forbidden. Laughing at animals is salaad because it shows disrespect to their spirits. Mixing certain foods is salaad because it can anger nature spirits. Breaking salaad is believed to cause thunderstorms, illness, or misfortune.",
@@ -386,12 +237,550 @@
         "language": "temiar",
         "tribe": "Temiar",
         "source": "Temiar taboo system",
-        "tags": [
-            "taboo",
-            "spiritual",
-            "rules",
-            "nature",
-            "respect"
-        ]
+        "tags": ["taboo", "spiritual", "rules", "nature", "respect"]
+    },
+    {
+        "content": "The Semai creation story tells of 'Pedn', the creator deity who shaped the world from water and mud. Pedn breathed life into the first humans by whispering wind into their nostrils. The first man was named 'Tak Salad' and the first woman 'Bok Salad'. They lived in the great forest before the flood that separated the world into sky, earth, and underground.",
+        "category": "folklore",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai cosmology and origin myths",
+        "tags": ["creation", "mythology", "origin", "cosmology"]
+    },
+    {
+        "content": "Semai vocabulary for forest navigation: 'bud' means upstream, 'bawah' means downstream, 'jor' means the ridge of a hill, 'lum' is a valley or low-lying area between hills. These directional terms are more useful in dense rainforest than compass points, as rivers and ridges are the main landmarks.",
+        "category": "kinship",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai forest navigation language",
+        "tags": ["language", "navigation", "forest", "directions"]
+    },
+    {
+        "content": "The Temiar 'sewang' healing ceremony is performed when a community member is seriously ill. The halaq (shaman) sings through the night, guided by spirit songs. Village members form a circle, swaying and responding in call-and-response. The sick person lies in the center while the halaq's spirit guide enters their body to drive out the illness-spirit.",
+        "category": "medicine",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar sewang ceremony details",
+        "tags": ["healing", "sewang", "halaq", "ceremony", "shaman"]
+    },
+    {
+        "content": "Jakun oral tradition includes the story of 'Batin Naning', a legendary ancestor who could speak to animals. When his village faced drought, Batin Naning asked the elephants where underground water could be found. The elephants led him to a spring that saved his people. To this day, Jakun people consider elephants sacred messengers.",
+        "category": "folklore",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun ancestral legends",
+        "tags": ["folktale", "animals", "elephant", "water", "ancestors"]
+    },
+    {
+        "content": "The Semai practice 'ladang' — shifting cultivation of hill rice (padi bukit). A section of forest is cleared and burned to enrich the soil. Rice, cassava, sweet potato, and maize are planted together in a polyculture system. After two harvests the plot is rested for 7-10 years to allow forest regrowth.",
+        "category": "skills",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai agriculture",
+        "tags": ["farming", "rice", "ladang", "forest", "food"]
+    },
+    {
+        "content": "The Temiar concept of 'ruwai' refers to the soul or spirit essence of a living being. Every person has a ruwai that can leave the body during sleep (as dreams) or during illness. A healer's job is to call back a wandering ruwai through song and ritual. Loss of ruwai causes weakness; permanent loss means death.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar spiritual cosmology",
+        "tags": ["soul", "spirit", "healing", "cosmology", "dreams"]
+    },
+    {
+        "content": "Jakun marriage customs require the groom's family to present 'hantaran' (gift offerings) to the bride's family. These include betel nut sets, cloth, food, and sometimes a knife. The ceremony is presided over by the tok batin who recites the adat terms. Jakun marriages are typically monogamous and divorce, while allowed, is rare and requires community mediation.",
+        "category": "traditions",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun marriage customs",
+        "tags": ["marriage", "ceremony", "adat", "family", "gifts"]
+    },
+    {
+        "content": "The Batek people have an extraordinary knowledge of wild honey. They can locate bee nests by tracking 'kelulut' (stingless bees) back to their hive inside hollow trees. Honey is harvested at night when bees are least active. Batek honey gatherers use smoke from burning bark to calm the bees during harvest.",
+        "category": "skills",
+        "language": "batek",
+        "tribe": "Batek",
+        "source": "Batek honey gathering practices",
+        "tags": ["honey", "bees", "forest", "skills", "food"]
+    },
+    {
+        "content": "Semai herbal medicine for childbirth: 'akar kayu' (tree roots) of the 'kelubi' palm are boiled to help ease labor. After birth, the mother drinks 'pati ikan' (concentrated fish broth) mixed with ginger for 44 days to restore strength. The placenta is wrapped in banana leaves and buried at the base of a fruit tree, symbolically connecting the child to the land.",
+        "category": "medicine",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai birthing traditions",
+        "tags": ["childbirth", "medicine", "plants", "ritual", "women"]
+    },
+    {
+        "content": "The Temiar maintain 'porig' — sacred forest groves that may never be cut or hunted. These are areas where powerful spirits reside. No one may sleep overnight in a porig, and voices must be kept low. Porig serve as wildlife refuges and water catchment areas, reflecting an ancient form of conservation.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar sacred forest practices",
+        "tags": ["forest", "sacred", "conservation", "spirits", "environment"]
+    },
+    {
+        "content": "Semai basic vocabulary: 'asuuk' means dog, 'engkuk' means monkey, 'balam' means deer, 'kuuy' means tiger, 'gajah' means elephant, 'nged' means snake. Animals are central to Semai cosmology — each has a spirit 'kehap' that must be respected. Hunters say a prayer before and after a kill, thanking the animal's spirit.",
+        "category": "kinship",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai animal vocabulary",
+        "tags": ["language", "animals", "vocabulary", "spirituality"]
+    },
+    {
+        "content": "The Jakun are known as 'Orang Hulu' (people of the upstream rivers). They traditionally live along the Pahang, Endau, and Mersing river systems in Johor and Pahang. Their villages are always near rivers, which serve as roads, food sources, and spiritual boundaries. The Jakun believe each river has a 'penunggu' (guardian spirit) that must be respected.",
+        "category": "traditions",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun geography and spiritual beliefs",
+        "tags": ["river", "geography", "spirits", "identity", "Johor"]
+    },
+    {
+        "content": "The Temiar bamboo stamping tubes (genggoong) are used in sewang ceremonies. Women stamp bundles of bamboo tubes of different lengths on the ground to create percussive rhythms. The resonant sound varies with the length and diameter of each tube. This instrument is unique to the Temiar and serves as the rhythmic foundation for healing songs.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar musical instruments",
+        "tags": ["music", "bamboo", "instruments", "ceremony", "women"]
+    },
+    {
+        "content": "Semai forest medicine for fever: leaves of the 'pokok mengkudu' (Morinda citrifolia / noni) are warmed over a fire and placed on the patient's forehead and abdomen. The bark of 'kayu jawi' is boiled and the steam is inhaled. These treatments are accompanied by recitations asking the plant's spirit to drive out the illness.",
+        "category": "medicine",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai fever treatments",
+        "tags": ["medicine", "fever", "plants", "healing", "forest"]
+    },
+    {
+        "content": "In Jakun folklore, the great flood 'bah besar' destroyed the original world. One family survived by climbing the tallest tree 'kayu ara' (strangler fig). When the waters receded, they were the ancestors of all Jakun people. This flood narrative is used to explain why Jakun villages are built on raised ground and why the fig tree is considered sacred.",
+        "category": "folklore",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun flood mythology",
+        "tags": ["flood", "mythology", "origin", "sacred tree", "ancestors"]
+    },
+    {
+        "content": "The Semai practice of 'ngenong' is a communal singing session held on evenings after a successful hunt or harvest. Village members sit in a circle and take turns improvising verses about the day's events — what animals were seen, what fruits were ripe, funny incidents. This oral tradition keeps community memory alive across generations.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai oral tradition practices",
+        "tags": ["music", "singing", "community", "oral history", "gathering"]
+    },
+    {
+        "content": "Jakun traditional boat-building uses the 'meranti' (Shorea) hardwood for dugout canoes called 'perahu'. A craftsman selects a mature trunk, fells it with ceremony, and hollows it using adzes and fire. The perahu is then filled with water and hot stones to steam and widen it. A skilled builder can complete a river canoe in two weeks.",
+        "category": "skills",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun boat-building traditions",
+        "tags": ["boats", "craftsmanship", "river", "wood", "transport"]
+    },
+    {
+        "content": "The Mah Meri people of Carey Island practice the 'Jo-oh' dance to honor ancestral spirits (moyang). During Jo-oh, dancers wear carved masks and enter altered states through drumming and incense smoke. The ceremony is held at the sea's edge, reflecting Mah Meri identity as coastal forest people. Jo-oh has been recognized by UNESCO as an intangible cultural heritage.",
+        "category": "traditions",
+        "language": "mah_meri",
+        "tribe": "Mah Meri",
+        "source": "Mah Meri ceremony and cultural heritage",
+        "tags": ["dance", "ceremony", "UNESCO", "masks", "ancestors"]
+    },
+    {
+        "content": "Temiar vocabulary for nature: 'woog' means river, 'juuy' means mountain, 'roong' means tree, 'bateg' means stone, 'caayk' means rain, 'malaas' means sun, 'nag' means moon, 'bintang' means stars. The Temiar have dozens of specific words for different forest ecosystems — swamp forest, hill forest, and riverbank forest are all named distinctly.",
+        "category": "kinship",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar nature vocabulary",
+        "tags": ["language", "vocabulary", "nature", "forest", "environment"]
+    },
+    {
+        "content": "Semai funeral customs: when someone dies, the village is abandoned. Everyone moves to a new location, as the spirit of the deceased (kehap) is believed to linger and may cause others to sicken. Personal belongings of the deceased are left with the body or destroyed. The name of the dead is not spoken aloud for one year, to avoid calling their spirit back.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai death and funeral traditions",
+        "tags": ["death", "funeral", "spirits", "taboo", "village"]
+    },
+    {
+        "content": "The Batek are the most egalitarian of Orang Asli societies — there is no formal leader or chief. Decisions are made by group consensus. Anyone can speak and any adult's opinion carries equal weight. If conflict arises, the disputing parties separate to different camps temporarily. The Batek philosophy of 'non-confrontation' has been studied by anthropologists worldwide.",
+        "category": "traditions",
+        "language": "batek",
+        "tribe": "Batek",
+        "source": "Batek social organization",
+        "tags": ["governance", "peace", "social structure", "equality", "conflict"]
+    },
+    {
+        "content": "The Jakun use 'akar kayu' (forest roots) as a natural insect repellent. The roots of 'pokok kesumba' (Bixa orellana) are boiled with coconut oil to create a paste applied to exposed skin before entering the forest. This natural DEET-alternative has been used for centuries and protects against malaria-carrying mosquitoes.",
+        "category": "medicine",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun insect repellent practices",
+        "tags": ["medicine", "insects", "forest", "plants", "protection"]
+    },
+    {
+        "content": "Semai folktale: 'The First Rice.' Long ago, rice did not exist. A beautiful spirit-woman 'Inche Semang' lived in the sky and took pity on hungry humans below. She pulled hairs from her own head and each one became a grain of rice, which she dropped to earth. This is why rice is sacred — each grain contains a fragment of the spirit-woman's soul.",
+        "category": "folklore",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai rice origin myths",
+        "tags": ["folklore", "rice", "origin", "spirit", "food"]
+    },
+    {
+        "content": "Temiar traditional medicine uses the 'keladi tikus' plant (Typhonium trilobatum) to treat snakebites. The corm is pounded with salt and applied directly to the bite wound to draw out venom. The healer simultaneously sings a specific anti-venom song taught to them by a spirit guide. Both the physical and spiritual treatments are considered equally important.",
+        "category": "medicine",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar snakebite treatment",
+        "tags": ["medicine", "snakebite", "plants", "healing", "venom"]
+    },
+    {
+        "content": "Jakun vocabulary for daily life: 'makan' means eat, 'minum' means drink, 'tidor' means sleep, 'jalan' means walk, 'balik' means return home, 'kerja' means work/activity, 'main' means play, 'sakit' means sick/pain. Jakun shares many words with Malay due to centuries of trade and intermarriage between the groups.",
+        "category": "kinship",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun basic vocabulary",
+        "tags": ["language", "vocabulary", "daily life", "Malay", "communication"]
+    },
+    {
+        "content": "The Semai practice animal tracking through signs: broken twigs at nose height indicate deer, muddy wallowing pools indicate wild boar, scratch marks on large trees indicate bear. The direction of footprints, the freshness of droppings, and bent grass indicate how recently an animal passed. This knowledge is taught to boys from age seven.",
+        "category": "skills",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai hunting and tracking skills",
+        "tags": ["hunting", "tracking", "forest", "animals", "skills"]
+    },
+    {
+        "content": "The Jakun 'adat hutan' (forest law) governs how the forest is used. Trees bearing fruit are protected during season. River sources near the village must never be disturbed. Game animals with young must not be hunted. These rules are enforced by the tok batin and violations are punished through fines paid to the community.",
+        "category": "traditions",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun forest law and conservation",
+        "tags": ["adat", "law", "conservation", "forest", "governance"]
+    },
+    {
+        "content": "The Mah Meri language belongs to the Aslian branch of the Austroasiatic language family. Key vocabulary: 'tanoh' (land/earth), 'ayek' (water), 'kayew' (tree/wood), 'api' (fire), 'angin' (wind). The Mah Meri have specialized vocabulary for sea and mangrove ecosystems not found in inland Orang Asli languages — reflecting their coastal identity.",
+        "category": "kinship",
+        "language": "mah_meri",
+        "tribe": "Mah Meri",
+        "source": "Mah Meri language and vocabulary",
+        "tags": ["language", "vocabulary", "coastal", "sea", "Aslian"]
+    },
+    {
+        "content": "Temiar children's game 'gasing kayu' involves spinning carved wooden tops. The tops are made from hardwood 'kayu keras' and are spun using a cord. Competitions test whose top spins longest. The game develops hand-eye coordination and teaches children about different wood densities — knowledge later applied to choosing wood for tools and shelters.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar children's games",
+        "tags": ["children", "games", "wood", "crafts", "education"]
+    },
+    {
+        "content": "The Semai 'halaa' is a community decision-making assembly where all adults — male and female — have equal voice. Disputes over land, marriage, and resources are resolved through extended discussion until consensus is reached. No decision is made by one person alone. The halaa can take days for serious matters. This deep democratic tradition predates modern constitutions by millennia.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai governance and democracy",
+        "tags": ["governance", "democracy", "community", "decision-making", "equality"]
+    },
+    {
+        "content": "Jakun traditional textile: women weave cloth using 'kulit kayu' (tree bark) from the terap tree (Artocarpus elasticus). The inner bark is soaked, beaten flat, and dried into flexible sheets. These bark-cloth garments are decorated with red and black natural dyes from forest berries and charcoal. Bark-cloth making is now rare but still practiced by elder women.",
+        "category": "skills",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun traditional textiles",
+        "tags": ["weaving", "bark cloth", "crafts", "textile", "traditional"]
+    },
+    {
+        "content": "The Semai belief in 'mugub' describes the shadow-soul — a second spiritual essence distinct from the main soul. The mugub can be captured by malevolent spirits, causing the person to become listless and confused. A Semai healer diagnoses mugub loss through observation of the patient's shadow at different times of day and treats it through special incantations at dawn.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai soul and spirit beliefs",
+        "tags": ["soul", "spirit", "healing", "beliefs", "shadow"]
+    },
+    {
+        "content": "Batek music centers on the 'nopuk' — a mouth bow made from a single bamboo strip with a rattan string. The player holds one end in the mouth and plucks the string, changing the mouth cavity shape to produce different tones. The nopuk is played as personal meditation, often while sitting by a river at dusk. Its sound is said to speak to river spirits.",
+        "category": "traditions",
+        "language": "batek",
+        "tribe": "Batek",
+        "source": "Batek musical instruments",
+        "tags": ["music", "bamboo", "instruments", "river", "personal"]
+    },
+    {
+        "content": "Temiar folktale: 'Why the Gibbon Calls at Dawn.' A young woman named Marek fell in love with a forest spirit. Her family forbade the union. On the morning they were to be separated forever, Marek called out to her love from the hilltop as the sun rose. The forest spirit transformed her into a gibbon so she could call to him each dawn forever. This story explains why gibbons sing at sunrise.",
+        "category": "folklore",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar animal origin stories",
+        "tags": ["folktale", "gibbon", "love", "transformation", "animals"]
+    },
+    {
+        "content": "The Semai use 'damar' (resin from Shorea trees) as a waterproof coating for baskets and as a torch fuel. Damar is collected by making diagonal cuts in the tree trunk and allowing resin to flow into bamboo cups over several days. Damar was historically traded with Malay and Chinese merchants, making it an important economic resource for Semai communities.",
+        "category": "skills",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai forest products and trade",
+        "tags": ["forest products", "trade", "resin", "crafts", "economy"]
+    },
+    {
+        "content": "Jakun traditional astrology uses star patterns to predict weather and time plantings. The appearance of the Pleiades star cluster (called 'bintang tujuh' — seven stars) above the eastern horizon at dusk signals the start of the dry season and time to clear fields. The position of the Southern Cross indicates direction during night travel on rivers.",
+        "category": "skills",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun traditional astronomy",
+        "tags": ["astronomy", "stars", "farming", "navigation", "seasons"]
+    },
+    {
+        "content": "The Che Wong people of Pahang believe that the world is animated by 'bili' — a divine force present in all living things. Their supreme deity is 'Tohan' who created all things. Che Wong cosmology describes seven layers of the universe, each inhabited by different spirit beings. The physical world humans inhabit is the middle layer, surrounded by spirit worlds above and below.",
+        "category": "traditions",
+        "language": "che_wong",
+        "tribe": "Che Wong",
+        "source": "Che Wong cosmological beliefs",
+        "tags": ["cosmology", "spirituality", "universe", "deity", "spirits"]
+    },
+    {
+        "content": "Semai midwifery is practiced by elder women called 'bidan'. A bidan knows over forty medicinal plants for pregnancy and birth. She massages the mother's abdomen from the seventh month to position the baby correctly. During labor, she burns aromatic herbs and sings encouraging songs. Semai communities with experienced bidans have traditionally low rates of birth complications.",
+        "category": "medicine",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai midwifery practices",
+        "tags": ["medicine", "childbirth", "women", "midwife", "plants"]
+    },
+    {
+        "content": "The Temiar 'penhulu' (village headman) is not an autocratic leader but a facilitator and spokesperson. The penhulu earns authority through demonstrated skill in negotiation, deep knowledge of adat, and personal qualities of generosity and calmness. The community can remove a penhulu who acts arrogantly. This role reflects Temiar values of earned, not inherited, authority.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar leadership traditions",
+        "tags": ["leadership", "governance", "community", "adat", "authority"]
+    },
+    {
+        "content": "The Orang Asli identify over 200 species of forest mushrooms, 60 of which are edible. The most prized is 'cendawan busut' (termite mushroom, Termitomyces) which grows on termite mounds during rainy season. Mushrooms are an important protein source and some varieties are used medicinally — 'cendawan kayu' (bracket fungus) is used to treat wounds as a natural antiseptic.",
+        "category": "skills",
+        "language": "semai",
+        "tribe": "Orang Asli (General)",
+        "source": "Orang Asli mushroom knowledge",
+        "tags": ["food", "mushrooms", "forest", "plants", "medicine"]
+    },
+    {
+        "content": "Jakun songs called 'nyanyian adat' are sung at harvest time and wedding ceremonies. These songs are in an archaic form of Jakun language not used in daily speech, suggesting they are very ancient. They describe the journeys of ancestral heroes, the qualities of the ideal community member, and prayers for good harvests. Elders who know all the verses are highly respected.",
+        "category": "traditions",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun ceremonial songs",
+        "tags": ["music", "ceremony", "songs", "harvest", "wedding"]
+    },
+    {
+        "content": "The Semai concept of 'loplop' refers to the spiritual essence contained within a river or water source. Before drinking from or bathing in an unfamiliar river, Semai people offer a small gift of food to the loplop. Polluting a river — even accidentally — requires an apology ceremony. This spiritual relationship with water sources has practical conservation benefits.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai water spirits and conservation",
+        "tags": ["water", "spirits", "conservation", "river", "ritual"]
+    },
+    {
+        "content": "Temiar healing songs are classified by the type of illness they treat. 'Nenyaa' songs treat physical injury, 'gelooh' songs treat fever and infections, 'sewang parei' songs are specifically for soul loss. Each classification is associated with specific plant medicines that accompany the singing. A master healer knows all three categories and which combination works for complex cases.",
+        "category": "medicine",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar medical song categories",
+        "tags": ["healing", "medicine", "songs", "shaman", "classification"]
+    },
+    {
+        "content": "The Jah Hut people of Pahang are master woodcarvers. Their carvings depict a complex pantheon of spirits: 'hantu ayer' (water spirits), 'hantu hutan' (forest spirits), 'tok nenek' (ancestor spirits). Each carving is made for a specific purpose — a small pendant protects a child, a large sculpture anchors the spirit of a dying elder to ease their passage.",
+        "category": "skills",
+        "language": "jah_hut",
+        "tribe": "Jah Hut",
+        "source": "Jah Hut woodcarving traditions",
+        "tags": ["woodcarving", "spirits", "crafts", "art", "healing"]
+    },
+    {
+        "content": "Semai seasonal knowledge: they observe the flowering of 'pokok medang' (Litsea) trees as a sign that fish are fattening in the rivers — ideal fishing time. The call of the 'burung tiong' (hill mynah) before sunrise signals dry weather ahead. The behavior of fireflies — whether they cluster or spread — predicts rain or dry conditions for the next three days.",
+        "category": "skills",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai ecological knowledge",
+        "tags": ["nature", "seasons", "ecology", "signs", "fishing"]
+    },
+    {
+        "content": "Batek people practice 'sharing economy' as a fundamental social law. Any food obtained — hunted, fished, or gathered — must be shared with all present in camp. Hoarding food is the most serious social violation. This practice ensures group survival in unpredictable forest environments and creates deep social bonds. Even visitors who arrive at mealtime must be fed.",
+        "category": "traditions",
+        "language": "batek",
+        "tribe": "Batek",
+        "source": "Batek social and economic practices",
+        "tags": ["sharing", "community", "food", "social law", "equality"]
+    },
+    {
+        "content": "The Semai 'polong' is a binding agreement between two families, sealed with a shared meal and witnessed by the community. Polong can formalize alliances, trade agreements, or peace after conflict. Once established, a polong is considered sacred and breaking it brings spiritual misfortune to the offending family. The tradition predates written contracts by thousands of years.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai formal agreements",
+        "tags": ["law", "agreement", "community", "alliance", "spiritual"]
+    },
+    {
+        "content": "Jakun folk remedy for toothache: the bark of 'pokok sapat' (a forest tree) is chewed and the juice held over the sore tooth. For extraction, a specific root called 'akar gigi' (literally 'tooth root') is tied around the tooth and left overnight — the root's natural substances loosen the tooth for removal. These remedies predate modern dentistry in these communities.",
+        "category": "medicine",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun dental medicine",
+        "tags": ["medicine", "toothache", "dental", "plants", "healing"]
+    },
+    {
+        "content": "The Temiar perform the 'jengkel' ceremony when establishing a new village. The halaq identifies the most spiritually clean location by reading signs — where night birds rest, where flowers grow densest, where the river runs clearest. The first house post is driven in with a recitation asking the land's spirit for permission to settle. Without this ceremony, the village is considered temporary.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar village establishment ceremony",
+        "tags": ["village", "ceremony", "spirits", "land", "settlement"]
+    },
+    {
+        "content": "Semai traditional tattoo practice 'buncil' uses thorns of the 'rotan' (rattan) dipped in soot to create permanent marks. Geometric patterns on the wrists and ankles protect the wearer from evil spirits. Curved lines on the forehead enhance mental clarity. Buncil is administered only by elders and the designs are specific to each family lineage, functioning as identity markers.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai tattoo traditions",
+        "tags": ["tattoo", "identity", "spiritual", "art", "ceremony"]
+    },
+    {
+        "content": "The Orang Asli groups have sophisticated knowledge of weather prediction through cloud observation. A red sunrise ('langit merah pagi') warns of approaching storms. Clouds shaped like mountains building in the east in the afternoon mean rain by nightfall. The smell of earth before a storm, the silence of birds at midday, and unusual insect behavior all serve as weather indicators passed down through generations.",
+        "category": "skills",
+        "language": "semai",
+        "tribe": "Orang Asli (General)",
+        "source": "Orang Asli weather prediction",
+        "tags": ["weather", "nature", "skills", "ecology", "prediction"]
+    },
+    {
+        "content": "The Che Wong number system: 'peoh' (one), 'balo' (two), 'bley' (three), 'peat' (four), 'lima' (five, borrowed from Malay). The Che Wong language has approximately 2,000 speakers and is considered endangered. It belongs to the Aslian language family and is most closely related to Batek and Mintil dialects. Language preservation efforts are ongoing in Pahang.",
+        "category": "kinship",
+        "language": "che_wong",
+        "tribe": "Che Wong",
+        "source": "Che Wong language documentation",
+        "tags": ["language", "numbers", "endangered", "vocabulary", "Pahang"]
+    },
+    {
+        "content": "The Jakun 'mandi bunga' (flower bathing) ceremony is performed after illness or misfortune to cleanse spiritual impurity. River water is mixed with flower petals, incense, and lime juice. The person bathes in this mixture at dawn while the bomoh recites purification prayers. The ritual is also performed on babies seven days after birth to introduce them to the spirit world.",
+        "category": "traditions",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun purification ceremonies",
+        "tags": ["ceremony", "purification", "spiritual", "flowers", "water"]
+    },
+    {
+        "content": "Semai traditional knowledge of ants: 'semut serai' (lemongrass ants) are harvested and eaten — their formic acid flavor is used as a spice. Nests of weaver ants 'semut perang' placed near garden plots protect crops from caterpillars. Giant red forest ants 'semut api' are used medicinally — their venom, applied in controlled amounts, is believed to treat joint pain, similar to bee sting therapy.",
+        "category": "medicine",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai traditional use of insects",
+        "tags": ["insects", "ants", "medicine", "food", "farming"]
+    },
+    {
+        "content": "The Temiar 'berladang' rice ceremony spans three ritual events. At planting, the halaq blesses seeds with a song asking the rice spirit 'semangat padi' for a good harvest. At the first flowering, small offerings of forest fruits are placed at the field corners. At harvest, the first cut bundle is carried home with singing — the rice spirit must be welcomed into the granary to ensure next year's fertility.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar rice cultivation ceremony",
+        "tags": ["rice", "ceremony", "harvest", "spirituality", "farming"]
+    },
+    {
+        "content": "The Mah Meri's relationship with the sea is central to their identity. They harvest mangrove crabs, mud lobsters, and shellfish. Their traditional fish traps 'bubu' are woven from bamboo and baited with coconut flesh. Fishing is governed by seasonal restrictions — certain areas are closed during spawning months to ensure fish populations recover. This traditional marine management predates modern fisheries science.",
+        "category": "skills",
+        "language": "mah_meri",
+        "tribe": "Mah Meri",
+        "source": "Mah Meri marine traditions",
+        "tags": ["fishing", "sea", "marine", "conservation", "mangrove"]
+    },
+    {
+        "content": "Semai folktale: 'The Generous Monkey.' A monkey named Cikek lived alone in a tall tree and hoarded all the fruit for himself. One dry season, all the other animals were starving. A small sunbird asked Cikek to share. Ashamed, Cikek threw down fruit until his tree was bare. That night, a new tree grew from the seeds — bigger and more fruitful than before. The story teaches that generosity always returns greater rewards.",
+        "category": "folklore",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai moral folktales",
+        "tags": ["folktale", "monkey", "generosity", "moral", "animals"]
+    },
+    {
+        "content": "The Temiar practice 'rawai' — a collective work party where the whole village helps a family with a large task (clearing a field, building a house, or harvesting). The family hosting the rawai provides food and the occasion becomes a social celebration. The Temiar believe a task done together has more spiritual weight than one done alone — community labor is sacred labor.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar communal work traditions",
+        "tags": ["community", "work", "cooperation", "social", "village"]
+    },
+    {
+        "content": "Jakun traditional medicine for skin diseases: the sap of 'getah jelutong' (Dyera costulata) is applied to rashes and fungal infections. For wound infection, leaves of 'senduduk' (Melastoma malabathricum) are pounded and applied as a poultice. Both plants have confirmed antibacterial properties in modern scientific studies, validating centuries of Jakun medicinal knowledge.",
+        "category": "medicine",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun skin medicine",
+        "tags": ["medicine", "skin", "plants", "wound", "antibacterial"]
+    },
+    {
+        "content": "The Semai observe 'pantang larang' — a system of food taboos during vulnerable life stages. A pregnant woman must not eat twin bananas (would cause twin birth complications). A new father must not eat deer meat (the deer's spirit of flight would enter the baby, making it restless). After serious illness, certain strong-flavored foods are avoided as the body's spirit is still weak. These taboos reflect ancient nutritional wisdom encoded in spiritual language.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai food taboos",
+        "tags": ["taboo", "food", "pregnancy", "spiritual", "health"]
+    },
+    {
+        "content": "The Batek have a unique myth about the origin of fire. They believe fire was stolen from the Sun Spirit 'Gobar' by a hero named Kedik. Kedik traveled to the sky by climbing a vine ladder, took an ember from the Sun's cooking fire, and brought it back to earth. This is why fire is treated with respect — it belongs to the sky world and is only borrowed by humans.",
+        "category": "folklore",
+        "language": "batek",
+        "tribe": "Batek",
+        "source": "Batek fire origin myth",
+        "tags": ["folklore", "fire", "origin", "myth", "sky"]
+    },
+    {
+        "content": "The Orang Asli groups of Peninsular Malaysia are classified into three broad groups based on language and history: the Negrito (Semang) group including Batek, Jahai, Kensiu, Kintak, Lanoh, and Mendriq — the oldest inhabitants; the Senoi group including Semai, Temiar, Jah Hut, Che Wong, Mah Meri, and Semoq Beri; and the Proto-Malay group including Jakun, Orang Kanaq, Orang Kuala, Orang Seletar, Semelai, and Temuan.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Orang Asli (General)",
+        "source": "Orang Asli ethnic classification",
+        "tags": ["identity", "ethnicity", "classification", "history", "diversity"]
+    },
+    {
+        "content": "Semai medicinal use of 'pokok keladi' (taro, Colocasia esculenta): the corm is grated and mixed with water as a treatment for diarrhea. The large leaves are used as natural wrapping for food. The purple variety 'keladi merah' is specifically used by female healers to treat menstrual pain — the plant is associated with feminine healing energy in Semai cosmology.",
+        "category": "medicine",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai taro plant medicine",
+        "tags": ["medicine", "plants", "women", "food", "healing"]
+    },
+    {
+        "content": "The Temiar believe the human body has multiple spirit locations: the main soul 'ruwai' resides in the head, a secondary spirit 'beruah' lives in the liver, and a shadow-spirit 'semangat' follows the body. When a healer treats someone, they address all three spirit-locations with different songs and remedies. This multi-layered view of spiritual anatomy is comparable to chakra systems in other Asian traditions.",
+        "category": "traditions",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar spiritual anatomy",
+        "tags": ["spirit", "healing", "body", "cosmology", "soul"]
+    },
+    {
+        "content": "Jakun boat navigation on rivers uses natural current reading — the experienced paddler reads circular eddies behind rocks, the V-shape of current splitting around obstacles, and color differences between deep and shallow water. 'Jeram' (rapids) are classified by the Jakun into five difficulty levels with names for each type of dangerous water feature, allowing precise communication about river conditions.",
+        "category": "skills",
+        "language": "jakun",
+        "tribe": "Jakun",
+        "source": "Jakun river navigation expertise",
+        "tags": ["river", "navigation", "boat", "skills", "water"]
+    },
+    {
+        "content": "The Mah Meri woodcarving tradition includes 'jenis moyang' — over 70 distinct recognized types of ancestral spirit figures. Each type has specific physical characteristics, associated powers, and ceremonial uses. Master carvers spend years learning to identify and correctly portray each moyang type. The knowledge of all 70-plus types is considered a form of cultural literacy unique to the Mah Meri.",
+        "category": "skills",
+        "language": "mah_meri",
+        "tribe": "Mah Meri",
+        "source": "Mah Meri spirit carving classification",
+        "tags": ["woodcarving", "ancestors", "art", "spirits", "knowledge"]
+    },
+    {
+        "content": "The Semai concept of 'nhac' refers to the sense of completeness and rightness when a community is in harmony. When nhac is present, hunts are successful, harvests are good, and illness is rare. Nhac can be disrupted by quarreling, stinginess, or disrespect to elders. Restoring nhac requires a community gathering, reconciliation, and a shared meal — the act of eating together is the most powerful restorer of harmony.",
+        "category": "traditions",
+        "language": "semai",
+        "tribe": "Semai",
+        "source": "Semai concept of community harmony",
+        "tags": ["harmony", "community", "spiritual", "social", "wellbeing"]
+    },
+    {
+        "content": "Temiar environmental knowledge: they identify over 15 types of soil by color, texture, and smell, each associated with specific plants that grow well in it. Red 'tanah merah' clay is good for cassava but poor for rice. Dark 'tanah hitam' near rivers is fertile for vegetables. Sandy 'pasir batu' soils near streams support specific medicinal plants. This soil taxonomy is as sophisticated as any agricultural science.",
+        "category": "skills",
+        "language": "temiar",
+        "tribe": "Temiar",
+        "source": "Temiar soil and agricultural knowledge",
+        "tags": ["soil", "agriculture", "ecology", "knowledge", "farming"]
     }
 ]

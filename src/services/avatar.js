@@ -7,6 +7,7 @@ import { functions } from './firebase'
 
 let talkingHeadInstance = null
 let idleEnabled = false
+let stopRequested = false
 
 /**
  * Procedural idle body animation — breathing sway — via scene.onBeforeRender.
@@ -373,6 +374,7 @@ async function speakWithTalkingHead(head, audioBuffer, words, wtimes, wdurations
  *   URL causes a 4xx → TalkingHead silently skips the audio → nothing plays.
  */
 export async function speak(talkingHead, text) {
+    stopRequested = false
     const head = talkingHead || talkingHeadInstance
     if (!head) {
         console.warn('Avatar not initialized')
@@ -388,11 +390,14 @@ export async function speak(talkingHead, text) {
         speakText = lastBreak > 100 ? slice.slice(0, lastBreak + 1) : slice
     }
 
+    const RACHEL_VOICE_ID = import.meta.env.VITE_ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM'
+
     try {
         // Call Cloud Function — ElevenLabs key stays hidden server-side
         const fn = httpsCallable(functions, 'speakWithTimestamps', { timeout: 30000 })
-        const { data } = await fn({ text: speakText })
+        const { data } = await fn({ text: speakText, voiceId: RACHEL_VOICE_ID })
 
+        console.log('[ElevenLabs] speakWithTimestamps response:', { hasAudio: !!data.audioBase64, fallback: data.fallback, keyInvalid: data.keyInvalid, alignmentKeys: data.alignment ? Object.keys(data.alignment) : null })
         if (!data.audioBase64) throw new Error('No audio returned from function')
 
         // Decode base64 MP3 → AudioBuffer via TalkingHead's AudioContext
@@ -419,15 +424,29 @@ export async function speak(talkingHead, text) {
         console.warn('ElevenLabs speak failed, using browser TTS:', err.message)
     }
 
-    // Fallback: browser SpeechSynthesis (no avatar lip-sync, but at least audible)
+    // Fallback: browser SpeechSynthesis with female voice
+    if (stopRequested) return
     await new Promise(resolve => {
         const utt = new SpeechSynthesisUtterance(speakText)
-        utt.rate = 0.85
-        utt.pitch = 0.95
-        utt.onend = resolve
-        utt.onerror = resolve
-        speechSynthesis.cancel()
-        speechSynthesis.speak(utt)
+        utt.rate = 0.88
+        utt.lang = 'en-US'
+        const applyAndSpeak = () => {
+            const voices = speechSynthesis.getVoices()
+            const femaleKeywords = ['female', 'woman', 'girl', 'zira', 'hazel', 'susan', 'samantha', 'victoria', 'karen', 'moira', 'fiona', 'sara', 'heera']
+            const femaleVoice = voices.find(v =>
+                femaleKeywords.some(k => v.name.toLowerCase().includes(k)) && v.lang.startsWith('en')
+            ) || voices.find(v => v.lang.startsWith('en') && v.name.includes('Female'))
+              || voices.find(v => v.lang.startsWith('en'))
+            utt.voice = femaleVoice || null
+            utt.pitch = femaleVoice ? 1.1 : 1.3
+            utt.onend = resolve
+            utt.onerror = resolve
+            speechSynthesis.cancel()
+            speechSynthesis.speak(utt)
+        }
+        const voices = speechSynthesis.getVoices()
+        if (voices.length > 0) applyAndSpeak()
+        else speechSynthesis.onvoiceschanged = applyAndSpeak
     })
 }
 
@@ -457,14 +476,15 @@ export async function warmupAudio(talkingHead) {
  * Stop any current speech / animation.
  */
 export function stopSpeaking(talkingHead) {
+    stopRequested = true
     const head = talkingHead || talkingHeadInstance
-    if (!head) return
-
-    try {
-        head.stopSpeaking()
-    } catch (error) {
-        console.warn('Error stopping speech:', error.message)
+    if (head) {
+        try { head.stopSpeaking() } catch (error) {
+            console.warn('Error stopping speech:', error.message)
+        }
     }
+    // Stop browser SpeechSynthesis fallback too
+    try { speechSynthesis.cancel() } catch { /* ignore */ }
 }
 
 /**

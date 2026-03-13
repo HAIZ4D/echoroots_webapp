@@ -5,6 +5,7 @@ import {
     query,
     getDocs,
     addDoc,
+    deleteDoc,
     limit,
 } from 'firebase/firestore'
 import seedData from '../data/seedKnowledge.json'
@@ -210,8 +211,21 @@ const firestoreWrite = (ref, data) =>
 
 export async function seedKnowledgeBase() {
     const knowledgeRef = collection(db, KNOWLEDGE_COLLECTION)
-    let seededCount = 0
 
+    // Clear all existing entries first to avoid duplicates on re-seed
+    console.log('Clearing existing knowledge base entries...')
+    try {
+        const existingDocs = await getDocs(query(knowledgeRef))
+        const deletions = existingDocs.docs.map(doc => deleteDoc(doc.ref))
+        await Promise.all(deletions)
+        console.log(`Deleted ${existingDocs.size} existing entries.`)
+    } catch (error) {
+        console.error('Failed to clear existing entries:', error.message)
+        return { seededCount: 0, error: error.message }
+    }
+
+    // Seed all entries fresh
+    let seededCount = 0
     for (const entry of seedData) {
         try {
             await firestoreWrite(knowledgeRef, {
