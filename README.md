@@ -184,8 +184,8 @@ flowchart TD
 ### Step 1 — Clone and Install
 
 ```bash
-git clone https://github.com/your-repo/echoroots-webapp.git
-cd echoroots-webapp
+git clone https://github.com/HAIZ4D/echoroots_webapp.git
+cd echoroots_webapp
 npm install
 npm install --prefix functions
 ```
@@ -222,7 +222,7 @@ VITE_ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL
 
 ```
 rules_version = '2';
-service cloud.firestore.beta {
+service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
       allow read, write: if true;
@@ -241,7 +241,7 @@ service cloud.firestore.beta {
 ```bash
 # Log in and link your project
 firebase login
-firebase use your-project-id
+firebase use echoroots-e0420
 
 # Store API keys in Google Secret Manager (never in code)
 firebase functions:secrets:set GEMINI_API_KEY
@@ -412,12 +412,11 @@ Used for all language understanding and reasoning tasks (called server-side via 
 
 ### Quick Start Checklist
 
-- [ ] Run `npm run dev` and open `http://localhost:5173`
-- [ ] Ensure Cloud Functions are deployed (`firebase deploy --only functions`)
-- [ ] Run `await window.seedDB()` in browser console (required for Digital Elder)
-- [ ] Test **Digital Elder** first — fastest to demo
-- [ ] Test **Pronunciation Lab** — no recording needed for browsing phrases
-- [ ] Test **StoryWeaver** with one of the example sentences below
+- [ ] Visit the live app: **[https://echoroots-e0420.web.app](https://echoroots-e0420.web.app)**
+- [ ] The knowledge base is pre-seeded — **Digital Elder is ready to use immediately**
+- [ ] Test **Digital Elder** first — type any question from the list below and press Enter
+- [ ] Test **Pronunciation Lab** — browse phrases and try recording one
+- [ ] Test **StoryWeaver** — record one of the Semai sentences below to run the full AI pipeline
 
 ---
 
