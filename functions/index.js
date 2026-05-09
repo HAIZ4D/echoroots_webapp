@@ -14,10 +14,17 @@ const { defineSecret } = require('firebase-functions/params')
 const { GoogleGenerativeAI } = require('@google/generative-ai')
 
 const GEMINI_KEY = defineSecret('GEMINI_API_KEY')
+// Dedicated Google Cloud Text-to-Speech key — separate from the AI Studio
+// Gemini key (which is locked to Generative Language API only and can't be
+// extended to other GCP services). This key was created in Cloud Console.
+const GCP_TTS_KEY = defineSecret('GCP_TTS_API_KEY')
+// ELEVENLABS_API_KEY no longer used — kept defined so previous secret versions
+// stay in Secret Manager. Can be destroyed with:
+//   firebase functions:secrets:destroy ELEVENLABS_API_KEY
 const EL_KEY = defineSecret('ELEVENLABS_API_KEY')
+void EL_KEY // explicit reference so eslint doesn't flag as unused
 
 const REGION = 'us-central1'
-const EL_VOICE_DEFAULT = 'EXAVITQu4vr4xnSDxMaL' // Bella — female voice, free tier compatible
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -405,122 +412,107 @@ Return ONLY the JSON, no other text.`
 )
 
 // ─── 8. textToSpeech ─────────────────────────────────────────────────────────
+// Google Cloud Text-to-Speech via REST. Uses dedicated GCP_TTS_API_KEY (not the
+// AI Studio Gemini key, which can't be extended to non-Gemini APIs).
+// Voice: en-US-Neural2-F (warm female), elder-style pacing.
+//
+// Response shape unchanged: { audioBase64, mimeType } on success or
+// { audioBase64: null, fallback: true } on failure → client falls back to
+// browser SpeechSynthesis.
+
+const GCP_TTS_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize'
+const ELDER_VOICE = {
+    languageCode: 'en-US',
+    name: 'en-US-Neural2-F',
+    ssmlGender: 'FEMALE',
+}
+const ELDER_AUDIO_CONFIG = {
+    audioEncoding: 'MP3',
+    speakingRate: 0.95,
+    pitch: -2.0,
+}
+
+async function synthesizeSpeechGcp(text, apiKey) {
+    const res = await fetch(`${GCP_TTS_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            input: { text },
+            voice: ELDER_VOICE,
+            audioConfig: ELDER_AUDIO_CONFIG,
+        }),
+    })
+
+    if (!res.ok) {
+        const errBody = await res.text().catch(() => String(res.status))
+        return { ok: false, status: res.status, error: errBody.slice(0, 400) }
+    }
+
+    const json = await res.json()
+    if (!json.audioContent) {
+        return { ok: false, status: res.status, error: 'No audioContent in response' }
+    }
+    return { ok: true, audioBase64: json.audioContent }
+}
 
 exports.textToSpeech = onCall(
-    { secrets: [EL_KEY], region: REGION, timeoutSeconds: 30 },
-    async ({ data }) => {
-        const { text, voiceId = EL_VOICE_DEFAULT } = data
-        if (!text) throw new HttpsError('invalid-argument', 'text required')
-
-        const apiKey = EL_KEY.value()?.trim()
-        if (!apiKey) {
-            console.error('[ElevenLabs] ELEVENLABS_API_KEY secret is empty or not set. Run: firebase functions:secrets:set ELEVENLABS_API_KEY')
-            return { audioBase64: null, fallback: true }
-        }
-
-        const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-            method: 'POST',
-            headers: {
-                Accept: 'audio/mpeg',
-                'Content-Type': 'application/json',
-                'xi-api-key': apiKey,
-            },
-            body: JSON.stringify({
-                text,
-                model_id: 'eleven_multilingual_v2',
-                voice_settings: { stability: 0.6, similarity_boost: 0.75 },
-            }),
-        })
-
-        if (res.status === 401) {
-            console.warn('[ElevenLabs] API key invalid or expired')
-            return { audioBase64: null, fallback: true, keyInvalid: true }
-        }
-        if (!res.ok) {
-            console.warn('[ElevenLabs] textToSpeech error:', res.status)
-            return { audioBase64: null, fallback: true }
-        }
-
-        const buffer = await res.arrayBuffer()
-        const audioBase64 = Buffer.from(buffer).toString('base64')
-        return { audioBase64, mimeType: 'audio/mpeg' }
-    }
-)
-
-// ─── 9. speakWithTimestamps (avatar lip-sync) ────────────────────────────────
-
-exports.speakWithTimestamps = onCall(
-    { secrets: [EL_KEY], region: REGION, timeoutSeconds: 60 },
+    { secrets: [GCP_TTS_KEY], region: REGION, timeoutSeconds: 30 },
     async ({ data }) => {
         const { text } = data
         if (!text) throw new HttpsError('invalid-argument', 'text required')
 
-        const apiKey = EL_KEY.value()?.trim()
+        const apiKey = GCP_TTS_KEY.value()?.trim()
         if (!apiKey) {
-            console.error('[ElevenLabs] ELEVENLABS_API_KEY secret is empty or not set. Run: firebase functions:secrets:set ELEVENLABS_API_KEY')
+            console.error('[TTS] GCP_TTS_API_KEY secret is empty.')
             return { audioBase64: null, fallback: true }
         }
 
-        // Use voiceId from request if provided, else fall back to default (Rachel)
-        const { voiceId: requestedVoiceId } = data
-        const voiceId = requestedVoiceId || EL_VOICE_DEFAULT
-        const headers = { 'xi-api-key': apiKey, 'Content-Type': 'application/json' }
-        // eleven_multilingual_v2 is available on ALL plans including free tier.
-        // eleven_turbo_v2_5 requires a paid plan — do NOT use on free tier accounts.
-        const ttsBody = JSON.stringify({
-            text,
-            model_id: 'eleven_multilingual_v2',
-            voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-        })
-
-        // Tier 1: with-timestamps — full lip-sync (requires Creator plan)
         try {
-            const res = await fetch(
-                `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/with-timestamps`,
-                { method: 'POST', headers, body: ttsBody }
-            )
-            if (res.status === 401) {
-                // 401 on /with-timestamps means this endpoint needs a higher plan — DO NOT bail out.
-                // Fall through to Tier 2 (regular TTS) which works on free tier.
-                console.warn('[ElevenLabs] with-timestamps 401 — endpoint requires Creator plan. Falling back to regular TTS.')
-            } else if (res.ok) {
-                const result = await res.json()
-                if (result.audio_base64) {
-                    console.log('[ElevenLabs] with-timestamps succeeded')
-                    return { audioBase64: result.audio_base64, alignment: result.alignment }
-                }
-            } else {
-                const errText = await res.text().catch(() => String(res.status))
-                console.warn('[ElevenLabs] with-timestamps failed:', res.status, errText.slice(0, 300))
+            const result = await synthesizeSpeechGcp(text, apiKey)
+            if (!result.ok) {
+                console.warn(`[TTS] Google Cloud TTS failed: ${result.status} ${result.error}`)
+                return { audioBase64: null, fallback: true }
             }
+            console.log(`[TTS] Google Cloud TTS succeeded (${text.length}ch)`)
+            return { audioBase64: result.audioBase64, mimeType: 'audio/mpeg' }
         } catch (e) {
-            console.warn('[ElevenLabs] with-timestamps error:', e.message)
+            console.warn(`[TTS] error: ${e.message}`)
+            return { audioBase64: null, fallback: true }
+        }
+    }
+)
+
+// ─── 9. speakWithTimestamps (avatar lip-sync) ────────────────────────────────
+// Google Cloud TTS via REST. GCP TTS does NOT return character-level timestamps
+// (only ElevenLabs Creator plan does), so the `alignment` field is omitted.
+// avatar.js handles missing alignment — TalkingHead generates approximate mouth
+// movement from audio amplitude.
+
+exports.speakWithTimestamps = onCall(
+    { secrets: [GCP_TTS_KEY], region: REGION, timeoutSeconds: 30 },
+    async ({ data }) => {
+        const { text } = data
+        if (!text) throw new HttpsError('invalid-argument', 'text required')
+
+        const apiKey = GCP_TTS_KEY.value()?.trim()
+        if (!apiKey) {
+            console.error('[TTS-lipsync] GCP_TTS_API_KEY secret is empty.')
+            return { audioBase64: null, fallback: true }
         }
 
-        // Tier 2: regular TTS — works on all plans including free tier
         try {
-            const res2 = await fetch(
-                `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-                { method: 'POST', headers, body: ttsBody }
-            )
-            if (res2.status === 401) {
-                const body = await res2.text().catch(() => '')
-                console.error('[ElevenLabs] 401 on regular TTS — API key truly invalid:', body.slice(0, 300))
-                return { audioBase64: null, fallback: true, keyInvalid: true }
+            const result = await synthesizeSpeechGcp(text, apiKey)
+            if (!result.ok) {
+                console.warn(`[TTS-lipsync] Google Cloud TTS failed: ${result.status} ${result.error}`)
+                return { audioBase64: null, fallback: true }
             }
-            if (res2.ok) {
-                const buffer = await res2.arrayBuffer()
-                const audioBase64 = Buffer.from(buffer).toString('base64')
-                console.log('[ElevenLabs] Regular TTS succeeded — ElevenLabs voice active')
-                return { audioBase64, mimeType: 'audio/mpeg' }
-            }
-            const errText2 = await res2.text().catch(() => res2.status)
-            console.warn('[ElevenLabs] Regular TTS failed:', res2.status, typeof errText2 === 'string' ? errText2.slice(0, 300) : errText2)
+            console.log(`[TTS-lipsync] Google Cloud TTS succeeded (${text.length}ch)`)
+            // No alignment — avatar uses duration-based mouth animation.
+            return { audioBase64: result.audioBase64, mimeType: 'audio/mpeg' }
         } catch (e) {
-            console.warn('[ElevenLabs] Regular TTS error:', e.message)
+            console.warn(`[TTS-lipsync] error: ${e.message}`)
+            return { audioBase64: null, fallback: true }
         }
-
-        return { audioBase64: null, fallback: true }
     }
 )
 
