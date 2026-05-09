@@ -397,16 +397,29 @@ export async function speak(talkingHead, text) {
         const fn = httpsCallable(functions, 'speakWithTimestamps', { timeout: 30000 })
         const { data } = await fn({ text: speakText, voiceId: RACHEL_VOICE_ID })
 
-        console.log('[ElevenLabs] speakWithTimestamps response:', { hasAudio: !!data.audioBase64, fallback: data.fallback, keyInvalid: data.keyInvalid, alignmentKeys: data.alignment ? Object.keys(data.alignment) : null })
+        console.log('[TTS] speakWithTimestamps response:', {
+            hasAudio: !!data.audioBase64,
+            fallback: data.fallback,
+            keyInvalid: data.keyInvalid,
+            wordCount: Array.isArray(data.words) ? data.words.length : 0,
+            alignmentKeys: data.alignment ? Object.keys(data.alignment) : null,
+        })
         if (!data.audioBase64) throw new Error('No audio returned from function')
 
         // Decode base64 MP3 → AudioBuffer via TalkingHead's AudioContext
         const bytes = Uint8Array.from(atob(data.audioBase64), c => c.charCodeAt(0))
         const audioBuffer = await head.audioCtx.decodeAudioData(bytes.buffer.slice(0))
 
-        // Build word timing from character alignment for lip-sync
+        // Build word timing for lip-sync. Two paths:
+        //   1. Server returned word-level arrays directly (Google Cloud TTS via SSML marks)
+        //   2. Server returned ElevenLabs-style character-level alignment (legacy)
         let words = [], wtimes = [], wdurations = []
-        if (data.alignment?.characters) {
+        if (Array.isArray(data.words) && data.words.length > 0
+            && Array.isArray(data.wtimes) && Array.isArray(data.wdurations)) {
+            words = data.words
+            wtimes = data.wtimes
+            wdurations = data.wdurations
+        } else if (data.alignment?.characters) {
             ;({ words, wtimes, wdurations } = charAlignmentToWords(
                 data.alignment.characters,
                 data.alignment.character_start_times_seconds,

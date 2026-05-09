@@ -18,11 +18,7 @@ const GEMINI_KEY = defineSecret('GEMINI_API_KEY')
 // Gemini key (which is locked to Generative Language API only and can't be
 // extended to other GCP services). This key was created in Cloud Console.
 const GCP_TTS_KEY = defineSecret('GCP_TTS_API_KEY')
-// ELEVENLABS_API_KEY no longer used — kept defined so previous secret versions
-// stay in Secret Manager. Can be destroyed with:
-//   firebase functions:secrets:destroy ELEVENLABS_API_KEY
-const EL_KEY = defineSecret('ELEVENLABS_API_KEY')
-void EL_KEY // explicit reference so eslint doesn't flag as unused
+// (ELEVENLABS_API_KEY secret was destroyed — TTS now goes through Google Cloud TTS.)
 
 const REGION = 'us-central1'
 
@@ -455,6 +451,104 @@ async function synthesizeSpeechGcp(text, apiKey) {
     return { ok: true, audioBase64: json.audioContent }
 }
 
+// ─── Lip-sync helper: GCP TTS with SSML marks for per-word timing ──────────
+//
+// Cloud TTS doesn't return character-level timestamps (the way ElevenLabs
+// Creator plan does), but it DOES return SSML mark timepoints. We wrap every
+// word in <mark> tags and request enableTimePointing=SSML_MARK, then build
+// word-level (text, start_ms, duration_ms) arrays for TalkingHead's lip-sync.
+
+function escapeSsml(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;')
+}
+
+// Strip punctuation but keep apostrophes/hyphens that belong inside words.
+function cleanWord(w) {
+    return String(w).replace(/[^\p{L}\p{N}'\-]+/gu, '').trim()
+}
+
+function buildMarkedSsml(text) {
+    const tokens = String(text).trim().split(/\s+/).filter(Boolean)
+    const parts = tokens.map((tok, i) => `<mark name="w${i}"/>${escapeSsml(tok)}`)
+    parts.push(`<mark name="end"/>`)
+    return { ssml: `<speak>${parts.join(' ')}</speak>`, tokens }
+}
+
+// SSML mark timepoints are only exposed on the v1beta1 endpoint (the stable
+// v1 endpoint silently rejects `enableTimePointing` as an unknown field).
+const GCP_TTS_URL_BETA = 'https://texttospeech.googleapis.com/v1beta1/text:synthesize'
+
+async function synthesizeSpeechGcpWithTiming(text, apiKey) {
+    const { ssml, tokens } = buildMarkedSsml(text)
+
+    const res = await fetch(`${GCP_TTS_URL_BETA}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            input: { ssml },
+            voice: ELDER_VOICE,
+            audioConfig: ELDER_AUDIO_CONFIG,
+            enableTimePointing: ['SSML_MARK'],
+        }),
+    })
+
+    if (!res.ok) {
+        const errBody = await res.text().catch(() => String(res.status))
+        return { ok: false, status: res.status, error: errBody.slice(0, 400) }
+    }
+
+    const json = await res.json()
+    if (!json.audioContent) {
+        return { ok: false, status: res.status, error: 'No audioContent in response' }
+    }
+
+    // timepoints: [{ markName: "w0", timeSeconds: 0.345 }, ..., { markName: "end", timeSeconds: 4.21 }]
+    const timepoints = Array.isArray(json.timepoints) ? json.timepoints : []
+    const wordMarks = timepoints
+        .filter((tp) => /^w\d+$/.test(tp.markName))
+        .sort((a, b) => parseInt(a.markName.slice(1), 10) - parseInt(b.markName.slice(1), 10))
+    const endMark = timepoints.find((tp) => tp.markName === 'end')
+
+    const words = []
+    const wtimes = []
+    const wdurations = []
+
+    if (wordMarks.length === 0 && tokens.length > 0) {
+        // No timepoints came back — fall back to even distribution based on
+        // a rough 70 ms-per-character estimate. Less accurate but keeps mouth
+        // moving instead of frozen.
+        const estDurMs = Math.max(600, text.length * 70)
+        const perWord = estDurMs / tokens.length
+        tokens.forEach((tok, i) => {
+            const w = cleanWord(tok)
+            if (!w) return
+            words.push(w)
+            wtimes.push(Math.round(i * perWord))
+            wdurations.push(Math.round(perWord))
+        })
+    } else {
+        tokens.forEach((tok, i) => {
+            const startSec = wordMarks[i]?.timeSeconds ?? 0
+            const nextSec =
+                wordMarks[i + 1]?.timeSeconds ??
+                endMark?.timeSeconds ??
+                startSec + 0.3
+            const w = cleanWord(tok)
+            if (!w) return
+            words.push(w)
+            wtimes.push(Math.round(startSec * 1000))
+            wdurations.push(Math.max(60, Math.round((nextSec - startSec) * 1000)))
+        })
+    }
+
+    return { ok: true, audioBase64: json.audioContent, words, wtimes, wdurations }
+}
+
 exports.textToSpeech = onCall(
     { secrets: [GCP_TTS_KEY], region: REGION, timeoutSeconds: 30 },
     async ({ data }) => {
@@ -483,10 +577,9 @@ exports.textToSpeech = onCall(
 )
 
 // ─── 9. speakWithTimestamps (avatar lip-sync) ────────────────────────────────
-// Google Cloud TTS via REST. GCP TTS does NOT return character-level timestamps
-// (only ElevenLabs Creator plan does), so the `alignment` field is omitted.
-// avatar.js handles missing alignment — TalkingHead generates approximate mouth
-// movement from audio amplitude.
+// Google Cloud TTS via SSML marks for per-word timing. The client (avatar.js)
+// feeds the returned words/wtimes/wdurations directly to TalkingHead's
+// speakAudio(), giving real lip sync that follows the audio.
 
 exports.speakWithTimestamps = onCall(
     { secrets: [GCP_TTS_KEY], region: REGION, timeoutSeconds: 30 },
@@ -501,14 +594,22 @@ exports.speakWithTimestamps = onCall(
         }
 
         try {
-            const result = await synthesizeSpeechGcp(text, apiKey)
+            const result = await synthesizeSpeechGcpWithTiming(text, apiKey)
             if (!result.ok) {
                 console.warn(`[TTS-lipsync] Google Cloud TTS failed: ${result.status} ${result.error}`)
                 return { audioBase64: null, fallback: true }
             }
-            console.log(`[TTS-lipsync] Google Cloud TTS succeeded (${text.length}ch)`)
-            // No alignment — avatar uses duration-based mouth animation.
-            return { audioBase64: result.audioBase64, mimeType: 'audio/mpeg' }
+            console.log(
+                `[TTS-lipsync] Google Cloud TTS succeeded (${text.length}ch, ${result.words.length} words)`
+            )
+            return {
+                audioBase64: result.audioBase64,
+                mimeType: 'audio/mpeg',
+                // Word-level timing for TalkingHead lip sync.
+                words: result.words,
+                wtimes: result.wtimes,
+                wdurations: result.wdurations,
+            }
         } catch (e) {
             console.warn(`[TTS-lipsync] error: ${e.message}`)
             return { audioBase64: null, fallback: true }
