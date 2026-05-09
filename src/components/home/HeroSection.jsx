@@ -13,10 +13,14 @@ const ringStyle = (pct, extra = {}) => ({
     ...extra,
 })
 
+// Six languages from across ASEAN, positioned around the orb.
 const CHIPS = [
-    { label: 'Semai', top: '9%', left: '62%', dur: 3.0 },
-    { label: 'Temiar', top: '46%', left: '90%', dur: 3.8 },
-    { label: 'Jakun', top: '79%', left: '60%', dur: 4.4 },
+    { label: 'Semai',   top: '6%',  left: '62%', dur: 3.0 },
+    { label: 'Iban',    top: '24%', left: '92%', dur: 3.4 },
+    { label: 'Khmer',   top: '54%', left: '95%', dur: 3.8 },
+    { label: 'Tagalog', top: '82%', left: '70%', dur: 4.2 },
+    { label: 'Hmong',   top: '74%', left: '8%',  dur: 4.6 },
+    { label: 'Tetum',   top: '32%', left: '4%',  dur: 3.6 },
 ]
 
 const containerVariants = {
@@ -85,7 +89,7 @@ export default function HeroSection() {
                                 maxWidth: '460px',
                             }}
                         >
-                            An AI-powered platform preserving indigenous languages and cultural knowledge through storytelling, interactive wisdom, and pronunciation coaching.
+                            An AI-powered platform preserving indigenous languages and cultural knowledge across Southeast Asia — from the Orang Asli of Malaysia to communities across all 11 ASEAN nations — through storytelling, interactive wisdom, and pronunciation coaching.
                         </motion.p>
 
                         {/* CTA buttons */}
@@ -146,7 +150,7 @@ export default function HeroSection() {
                             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', opacity: 0.55, letterSpacing: '0.12em', textTransform: 'uppercase', marginRight: '2px' }}>
                                 Preserving
                             </span>
-                            {['Semai', 'Temiar', 'Jakun'].map((lang) => (
+                            {['Semai', 'Temiar', 'Iban', 'Khmer', 'Tagalog', 'Hmong'].map((lang) => (
                                 <span key={lang} style={{
                                     fontSize: '11px', fontWeight: 600,
                                     padding: '4px 12px', borderRadius: '99px',
@@ -158,6 +162,16 @@ export default function HeroSection() {
                                     {lang}
                                 </span>
                             ))}
+                            <span style={{
+                                fontSize: '11px', fontWeight: 600,
+                                padding: '4px 12px', borderRadius: '99px',
+                                background: 'rgba(0,229,160,0.06)',
+                                border: '1px solid rgba(0,229,160,0.22)',
+                                color: 'var(--accent-light, #34d399)',
+                                fontFamily: 'var(--font-mono)', letterSpacing: '0.08em',
+                            }}>
+                                +8 across ASEAN
+                            </span>
                         </motion.div>
                     </motion.div>
 

@@ -6,11 +6,13 @@ import {
 } from 'lucide-react'
 import PronunciationMeter from '../components/PronunciationMeter'
 import AvatarCanvas from '../components/AvatarCanvas'
+import SnapAndLearn from '../components/SnapAndLearn'
 import useAudioRecorder from '../hooks/useAudioRecorder'
 import useAppStore from '../stores/appStore'
 import { agenticEvaluation } from '../services/gemini'
 import { textToSpeech } from '../services/elevenlabs'
 import { speak, warmupAudio } from '../services/avatar'
+import { Camera as CameraIcon, BookOpen as PhrasesIcon } from 'lucide-react'
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -70,6 +72,7 @@ const phraseVariants = {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function PronunciationLab() {
+    const [mode, setMode]                         = useState('phrases') // 'phrases' | 'snap'
     const [currentIndex, setCurrentIndex]         = useState(0)
     const [direction, setDirection]               = useState(1)
     const [evaluationResult, setEvaluationResult] = useState(null)
@@ -231,8 +234,8 @@ export default function PronunciationLab() {
                                     Living Words
                                 </span>
                             </h1>
-                            <p style={{ fontSize: '15px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.65, maxWidth: '480px' }}>
-                                Master indigenous pronunciation with AI-powered coaching and real-time feedback.
+                            <p style={{ fontSize: '15px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.65, maxWidth: '520px' }}>
+                                Master indigenous pronunciation with AI-powered coaching — across <strong style={{ color: 'var(--accent)' }}>14 languages from all 11 ASEAN countries</strong>. Practice from the phrase library, or snap a photo of any object to learn its name.
                             </p>
                         </div>
 
@@ -269,7 +272,53 @@ export default function PronunciationLab() {
                     </div>
                 </div>
 
-                {/* ── Two-column body ─────────────────────────────────────── */}
+                {/* ── Mode toggle: Phrases vs Snap & Learn ─────────────────── */}
+                <div style={{
+                    display: 'flex', justifyContent: 'center', marginBottom: '28px',
+                    gap: '8px', padding: '5px', borderRadius: '14px',
+                    background: 'rgba(12,30,18,0.6)', border: '1px solid rgba(255,255,255,0.06)',
+                    width: 'fit-content', margin: '0 auto 28px',
+                }}>
+                    {[
+                        { key: 'phrases', label: 'Phrase Library', Icon: PhrasesIcon },
+                        { key: 'snap', label: 'Snap & Learn', Icon: CameraIcon },
+                    ].map(({ key, label, Icon }) => {
+                        const active = mode === key
+                        return (
+                            <button
+                                key={key}
+                                onClick={() => setMode(key)}
+                                style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                                    padding: '10px 22px', borderRadius: '10px',
+                                    background: active
+                                        ? 'linear-gradient(135deg, rgba(200,164,92,0.22), rgba(200,164,92,0.08))'
+                                        : 'transparent',
+                                    border: active
+                                        ? '1px solid rgba(200,164,92,0.5)'
+                                        : '1px solid transparent',
+                                    color: active ? '#e8d5a3' : 'var(--text-secondary)',
+                                    fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    fontFamily: 'var(--font-body)',
+                                }}
+                            >
+                                <Icon size={14} />
+                                {label}
+                            </button>
+                        )
+                    })}
+                </div>
+
+                {/* ── Snap & Learn mode ─────────────────────────────────────── */}
+                {mode === 'snap' && (
+                    <div style={{ maxWidth: '720px', margin: '0 auto', width: '100%' }}>
+                        <SnapAndLearn />
+                    </div>
+                )}
+
+                {/* ── Phrase Library mode (existing two-column body) ────────── */}
+                {mode === 'phrases' && (
                 <div className="flex flex-col lg:flex-row" style={{ gap: '24px', alignItems: 'flex-start' }}>
 
                     {/* ─ Left: Main Panel ─ */}
@@ -842,6 +891,7 @@ export default function PronunciationLab() {
                     </div>
 
                 </div>
+                )}
             </div>
         </motion.div>
     )

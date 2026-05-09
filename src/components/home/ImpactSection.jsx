@@ -5,8 +5,8 @@ import AnimatedCounter from '../ui/AnimatedCounter'
 
 const STATS = [
     { target: 500, suffix: '+', label: 'Languages at risk\nacross Southeast Asia' },
-    { target: 3,   suffix: '',  label: 'Orang Asli tribes\nbeing documented' },
-    { target: '∞', suffix: '',  label: 'Stories worth\npreserving forever' },
+    { target: 14,  suffix: '',  label: 'Indigenous languages\nin our archive' },
+    { target: 11,  suffix: '',  label: 'ASEAN countries\nrepresented' },
 ]
 
 export default function ImpactSection() {

@@ -69,7 +69,7 @@ export default function Footer() {
                     margin: 0, fontFamily: 'var(--font-mono)', letterSpacing: '0.1em',
                     textTransform: 'uppercase', textAlign: 'center',
                 }}>
-                    &copy; 2026 EchoRoots · Orang Asli Cultural Preservation Platform
+                    &copy; 2026 EchoRoots · Indigenous Southeast Asian Cultural Preservation
                 </p>
             </div>
         </footer>
