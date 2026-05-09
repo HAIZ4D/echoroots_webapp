@@ -87,7 +87,7 @@ The UI shows a green **Verified** badge for dictionary hits, a yellow **AI sugge
 | Mainland Southeast Asia | Khmer (Cambodia), Lao, Thai, Burmese, Hmong (Daw) |
 | Maritime Southeast Asia | Malay, Tagalog (Filipino), Tetum (Timor-Leste) |
 
-The vocabulary dictionary is **bundled with the Cloud Function** as JSON — zero Firestore round-trips per lookup. New entries are added through a documented PDF-extraction workflow ([docs/PDF_EXTRACTION_PROMPT.md](docs/PDF_EXTRACTION_PROMPT.md), [docs/RESEARCH_PROMPT_FOR_CLAUDE_WEB.md](docs/RESEARCH_PROMPT_FOR_CLAUDE_WEB.md)).
+The vocabulary dictionary is **bundled with the Cloud Function** as JSON — zero Firestore round-trips per lookup.
 
 ### 4. 🎙 Per-Word Lip Sync via Cloud TTS SSML Mark Timepoints
 
