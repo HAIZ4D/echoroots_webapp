@@ -100,6 +100,22 @@ export async function orchestrateElderResponse(question) {
 }
 
 /**
+ * Snap & Learn: identify an object in an image and translate its name into
+ * an Orang Asli language. Two-agent pipeline (vision → vocabulary).
+ *
+ * Returns { refused, englishName, indigenousWord, pronunciation, culturalNote,
+ *          language, disclaimer, message? }. `refused: true` means the image
+ * couldn't be identified or no confident translation exists.
+ */
+export async function lookupVisionWord(imageBlob, language = 'semai') {
+    const imageBase64 = await blobToBase64(imageBlob)
+    const mimeType = imageBlob.type || 'image/jpeg'
+    const fn = httpsCallable(functions, 'orchestrateVisionLookup', { timeout: 45000 })
+    const { data } = await fn({ imageBase64, mimeType, language })
+    return data
+}
+
+/**
  * @deprecated Use agenticEvaluation instead.
  * Evaluate user pronunciation against a reference phrase — via Cloud Function.
  */

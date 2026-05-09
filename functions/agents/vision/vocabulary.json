@@ -1,0 +1,133 @@
+{
+  "_meta": {
+    "purpose": "Curated Orang Asli vocabulary used by vocabTranslator agent. Words extracted from EchoRoots seedKnowledge.json + verified PHRASES list. Add new entries as native speakers contribute. Lookup is by english key (lowercase). Multi-word english keys are searched, then their last word as fallback.",
+    "schema": "language → english_word → { word, pronunciation, context }"
+  },
+
+  "semai": {
+    "mother":      { "word": "mai",        "pronunciation": "MAY",          "context": "kinship term" },
+    "father":      { "word": "bah",        "pronunciation": "BAH",          "context": "kinship term" },
+    "grandparent": { "word": "nek",        "pronunciation": "NEK",          "context": "kinship term — refers to grandparents" },
+    "sibling":     { "word": "adek",       "pronunciation": "AH-dek",       "context": "kinship term" },
+    "one":         { "word": "naah",       "pronunciation": "NAH",          "context": "number 1 (base-five counting system)" },
+    "two":         { "word": "baar",       "pronunciation": "BAR",          "context": "number 2" },
+    "three":       { "word": "nay",        "pronunciation": "NAY",          "context": "number 3" },
+    "four":        { "word": "pon",        "pronunciation": "PON",          "context": "number 4" },
+    "five":        { "word": "manasai",    "pronunciation": "MAH-nah-sai",  "context": "number 5 — base of the counting system" },
+    "dog":         { "word": "asuuk",      "pronunciation": "AH-sook",      "context": "animals have a spirit (kehap) that must be respected" },
+    "monkey":      { "word": "engkuk",     "pronunciation": "ENG-kook" },
+    "deer":        { "word": "balam",      "pronunciation": "BAH-lam" },
+    "tiger":       { "word": "kuuy",       "pronunciation": "KOOY" },
+    "elephant":    { "word": "gajah",      "pronunciation": "GAH-jah",      "context": "borrowed from Malay, widely used" },
+    "snake":       { "word": "nged",       "pronunciation": "NGED" },
+    "tree":        { "word": "akar kayu",  "pronunciation": "AH-kar KAH-yoo", "context": "literally 'tree roots'; also used for trees generally" },
+    "thunder":     { "word": "nyani",      "pronunciation": "NYAH-nee",     "context": "thunder deity who punishes disrespect toward nature" },
+    "ridge":       { "word": "jor",        "pronunciation": "JOR",          "context": "the ridge of a hill (forest navigation term)" },
+    "valley":      { "word": "lum",        "pronunciation": "LUM",          "context": "low-lying area between hills" },
+    "upstream":    { "word": "bud",        "pronunciation": "BUD",          "context": "river-direction term" },
+    "downstream":  { "word": "bawah",      "pronunciation": "BAH-wah",      "context": "river-direction term" },
+    "flute":       { "word": "pensol",     "pronunciation": "PEN-sol",      "context": "traditional bamboo nose flute, played in courtship" },
+    "blowpipe":    { "word": "sumpit",     "pronunciation": "SOOM-pit",     "context": "traditional hunting weapon" },
+    "bottle":      { "word": "butol",      "pronunciation": "BOO-tol",      "context": "borrowed from Malay 'botol'" },
+    "respect":     { "word": "senroi",     "pronunciation": "SEN-ROY",      "context": "fear and respect for nature; treating the natural world as alive with spirits" },
+    "people":      { "word": "senoi",      "pronunciation": "SEN-oy",       "context": "the Semai people's name for themselves; also means 'human/person' and a value of peaceful conflict resolution" },
+    "spirit":      { "word": "kehap",      "pronunciation": "KEH-hap",      "context": "the spirit of an animal, treated with prayer before and after a hunt" }
+  },
+
+  "temiar": {
+    "spirit":      { "word": "gunik",      "pronunciation": "GOO-nik",      "context": "the spirit world; spirits communicated with through trance" },
+    "shaman":      { "word": "halaq",      "pronunciation": "HAH-lahk",     "context": "the Temiar shaman who leads sewang ceremonies" },
+    "ceremony":    { "word": "sewang",     "pronunciation": "SEH-wang",     "context": "trance-singing ceremony where the halaq communicates with spirits" },
+    "soul":        { "word": "ruwai",      "pronunciation": "ROO-wai",      "context": "the soul/spirit essence; can leave the body in dreams or illness" },
+    "guide":       { "word": "cenoi",      "pronunciation": "CHEN-oy",      "context": "the spirit guide of a healer — typically tiger, eagle, or butterfly" },
+    "taboo":       { "word": "salaad",     "pronunciation": "SAH-lahd",     "context": "forbidden things; breaking salaad causes thunderstorms or illness" },
+    "forest":      { "word": "porig",      "pronunciation": "POH-rig",      "context": "sacred forest grove that must not be cut or hunted; a wildlife refuge" },
+    "pigment":     { "word": "laka",       "pronunciation": "LAH-kah",      "context": "red pigment from the lac insect, used in ceremonial body painting" },
+    "hello":       { "word": "hay deh",    "pronunciation": "HAY DEH",      "context": "informal greeting" }
+  },
+
+  "jakun": {
+    "headman":     { "word": "tok batin",  "pronunciation": "TOHK BAH-tin", "context": "village headman; serves as leader, judge, and keeper of customary law (adat)" },
+    "shaman":      { "word": "bomoh",      "pronunciation": "BOH-moh",      "context": "spiritual healer who communicates with spirits" },
+    "ceremony":    { "word": "berhantu",   "pronunciation": "BER-HAN-too",  "context": "trance healing ceremony" },
+    "preparation": { "word": "berjamu",    "pronunciation": "BER-JAH-moo",  "context": "ritual preparation of herbs and prayers used in healing" },
+    "gift":        { "word": "hantaran",   "pronunciation": "HAN-tah-ran",  "context": "gift offerings the groom's family presents at marriage" }
+  },
+
+  "mah_meri": {
+    "mask":        { "word": "moyang",     "pronunciation": "MOH-yang",     "context": "ancestral spirit masks carved by Mah Meri woodcarvers" },
+    "dance":       { "word": "jo-oh",      "pronunciation": "JOH-OH",       "context": "ceremonial dance honoring ancestors" }
+  },
+
+  "iban": {
+    "mother":      { "word": "indai",         "pronunciation": "IN-dye",            "context": "Iban people of Brunei, Sarawak (Malaysia), and Kalimantan (Indonesia)" },
+    "father":      { "word": "apai",          "pronunciation": "AH-pie" },
+    "water":       { "word": "ai",            "pronunciation": "EYE" },
+    "food":        { "word": "pemakai",       "pronunciation": "peh-MAH-kai" },
+    "thank you":   { "word": "terima kasih",  "pronunciation": "TER-ee-mah KAH-see", "context": "borrowed from Malay; widely used across Borneo" }
+  },
+
+  "khmer": {
+    "hello":       { "word": "suosdei",       "pronunciation": "SOO-OS-DAY",        "context": "Cambodia" },
+    "thank you":   { "word": "arkoun",        "pronunciation": "AR-koon" },
+    "water":       { "word": "teuk",          "pronunciation": "TUK" },
+    "mother":      { "word": "mday",          "pronunciation": "MUH-DAY",            "context": "informal: 'mak'" }
+  },
+
+  "balinese": {
+    "thank you":   { "word": "suksma",        "pronunciation": "SOOK-smah",         "context": "more formal: 'matur suksma'; spoken in Bali, Indonesia" },
+    "water":       { "word": "yeh",           "pronunciation": "YEH" },
+    "father":      { "word": "bapa",          "pronunciation": "BAH-pah",           "context": "more formal: 'aji'" },
+    "mother":      { "word": "meme",          "pronunciation": "MEH-meh" }
+  },
+
+  "lao": {
+    "hello":       { "word": "sabaidee",      "pronunciation": "SAH-bai-DEE",       "context": "Laos" },
+    "thank you":   { "word": "khop chai",     "pronunciation": "KOP CHAI" },
+    "water":       { "word": "nam",           "pronunciation": "NAHM" },
+    "mother":      { "word": "mae",           "pronunciation": "MAY" }
+  },
+
+  "burmese": {
+    "hello":       { "word": "mingalaba",     "pronunciation": "MING-gah-LAH-bah",  "context": "Myanmar" },
+    "thank you":   { "word": "jezu tin ba de", "pronunciation": "JEH-zoo TIN BAH DEH" },
+    "mother":      { "word": "amay",          "pronunciation": "AH-may" },
+    "father":      { "word": "aphay",         "pronunciation": "AH-pay" }
+  },
+
+  "tagalog": {
+    "hello":       { "word": "kumusta",       "pronunciation": "koo-MOOS-tah",      "context": "Philippines; also serves as 'How are you?'" },
+    "thank you":   { "word": "salamat",       "pronunciation": "sah-LAH-mat" },
+    "water":       { "word": "tubig",         "pronunciation": "TOO-big" },
+    "mother":      { "word": "ina",           "pronunciation": "EE-nah",            "context": "informal: 'nanay'" }
+  },
+
+  "malay": {
+    "thank you":   { "word": "terima kasih",  "pronunciation": "TER-ee-mah KAH-see", "context": "Malay community across Singapore and the Malay Peninsula" },
+    "water":       { "word": "air",           "pronunciation": "AH-yer" },
+    "mother":      { "word": "ibu",           "pronunciation": "EE-boo" },
+    "father":      { "word": "bapa",          "pronunciation": "BAH-pah" }
+  },
+
+  "thai": {
+    "hello":       { "word": "sawatdee",      "pronunciation": "sah-WAHT-dee",      "context": "Thailand" },
+    "thank you":   { "word": "khop khun",     "pronunciation": "KOP KOON" },
+    "water":       { "word": "nam",           "pronunciation": "NAHM" },
+    "mother":      { "word": "mae",           "pronunciation": "MAY" }
+  },
+
+  "hmong": {
+    "hello":       { "word": "nyob zoo",      "pronunciation": "NYAW ZONG",         "context": "Hmong Daw / White Hmong dialect — northern Vietnam, Laos, and southern China" },
+    "thank you":   { "word": "ua tsaug",      "pronunciation": "OO-ah TSOW" },
+    "mother":      { "word": "niam",          "pronunciation": "NEE-ah" },
+    "father":      { "word": "txiv",          "pronunciation": "TSEE" }
+  },
+
+  "tetum": {
+    "hello":       { "word": "bondia",        "pronunciation": "BON-dee-ah",        "context": "Timor-Leste; also means 'good morning'; from Portuguese influence" },
+    "thank you":   { "word": "obrigadu",      "pronunciation": "ob-ree-GAH-doo",    "context": "men say 'obrigadu', women say 'obrigada' — borrowed from Portuguese" },
+    "water":       { "word": "bee",           "pronunciation": "BEH" },
+    "mother":      { "word": "inan",          "pronunciation": "EE-nan" },
+    "father":      { "word": "aman",          "pronunciation": "AH-mahn" }
+  }
+}

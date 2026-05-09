@@ -1100,3 +1100,100 @@ exports.orchestrateEvaluation = onCall(
         }
     }
 )
+
+// ─── Snap & Learn vision pipeline ───────────────────────────────────────────
+// User snaps a photo of a real-world object → vision agent identifies it →
+// vocab agent translates to the target Orang Asli language. Both agents fail
+// closed: low-confidence results become refusals rather than fabrications.
+
+const visionIdentifier = require('./agents/vision/visionIdentifier')
+const vocabTranslator = require('./agents/vision/vocabTranslator')
+
+exports.orchestrateVisionLookup = onCall(
+    { secrets: [GEMINI_KEY], region: REGION, timeoutSeconds: 45 },
+    async ({ data }) => {
+        const { imageBase64, mimeType, language = 'semai' } = data
+        if (!imageBase64) throw new HttpsError('invalid-argument', 'imageBase64 required')
+
+        const apiKey = GEMINI_KEY.value()
+        const reqId = Math.random().toString(36).slice(2, 8)
+        const t0 = Date.now()
+
+        // 1. Vision identification
+        let vision
+        try {
+            vision = await visionIdentifier.handler({ imageBase64, mimeType, apiKey })
+            console.log(
+                `[vision ${reqId}] identifier name="${vision.englishName}" conf=${vision.confidence} reason="${(vision.reason || '').slice(0, 80)}"`
+            )
+        } catch (e) {
+            console.warn(`[vision ${reqId}] identifier error: ${e.message}`)
+            return {
+                refused: true,
+                reason: 'vision_failed',
+                message: 'I had trouble looking at that image. Please try again with better lighting.',
+                englishName: null,
+                indigenousWord: null,
+            }
+        }
+
+        if (!vision.englishName) {
+            console.log(`[vision ${reqId}] no-object refusal ${Date.now() - t0}ms`)
+            return {
+                refused: true,
+                reason: 'no_object',
+                message:
+                    "I couldn't identify a single clear object in that photo. Try framing one item up close, with good lighting and a plain background.",
+                englishName: null,
+                indigenousWord: null,
+                hint: vision.reason,
+            }
+        }
+
+        // 2. Vocabulary translation
+        let vocab
+        try {
+            vocab = await vocabTranslator.handler({ englishName: vision.englishName, language, apiKey })
+            console.log(
+                `[vision ${reqId}] vocab word="${vocab.indigenousWord}" pron="${vocab.pronunciation}" conf=${vocab.confidence}`
+            )
+        } catch (e) {
+            console.warn(`[vision ${reqId}] vocab error: ${e.message}`)
+            vocab = { indigenousWord: null, pronunciation: null, culturalNote: '', confidence: 0 }
+        }
+
+        // 3. Compose final response
+        if (!vocab.indigenousWord) {
+            console.log(`[vision ${reqId}] no-translation refusal ${Date.now() - t0}ms`)
+            return {
+                refused: true,
+                reason: 'no_translation',
+                message: `I see a ${vision.englishName}, but I don't have a confident ${language} translation in my knowledge. An elder from the community could help us learn this word.`,
+                englishName: vision.englishName,
+                indigenousWord: null,
+                language,
+            }
+        }
+
+        console.log(`[vision ${reqId}] complete word="${vocab.indigenousWord}" ${Date.now() - t0}ms`)
+
+        const verified = vocab.source === 'verified'
+        return {
+            refused: false,
+            englishName: vision.englishName,
+            indigenousWord: vocab.indigenousWord,
+            pronunciation: vocab.pronunciation,
+            culturalNote: vocab.culturalNote,
+            confidence: vocab.confidence,
+            language,
+            source: vocab.source,                 // 'verified' | 'ai_suggested'
+            matchedEnglish: vocab.matchedEnglish, // dictionary key matched (may differ from englishName for compound nouns)
+            // Stronger disclaimer when the answer came from the LLM rather than
+            // the curated dictionary.
+            disclaimer: verified
+                ? 'Verified word from the EchoRoots cultural archive.'
+                : 'AI-suggested translation — please verify with a native speaker.',
+        }
+    }
+)
+
