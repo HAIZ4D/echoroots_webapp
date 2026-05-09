@@ -8,7 +8,7 @@ import PronunciationMeter from '../components/PronunciationMeter'
 import AvatarCanvas from '../components/AvatarCanvas'
 import useAudioRecorder from '../hooks/useAudioRecorder'
 import useAppStore from '../stores/appStore'
-import { evaluatePronunciation } from '../services/gemini'
+import { agenticEvaluation } from '../services/gemini'
 import { textToSpeech } from '../services/elevenlabs'
 import { speak, warmupAudio } from '../services/avatar'
 
@@ -153,7 +153,7 @@ export default function PronunciationLab() {
         if (!audioBlob) return
         setIsEvaluating(true)
         try {
-            const result = await evaluatePronunciation(audioBlob, currentPhrase.phrase)
+            const result = await agenticEvaluation(audioBlob, currentPhrase.phrase, currentPhrase.language)
             setEvaluationResult(result)
             updatePronunciationProgress({ phrase: currentPhrase.phrase, score: result.score, timestamp: Date.now() })
         } catch (err) {
@@ -651,6 +651,8 @@ export default function PronunciationLab() {
                                     transcribed={evaluationResult.transcribed}
                                     feedback={evaluationResult.feedback}
                                     tips={evaluationResult.tips}
+                                    alignment={evaluationResult.alignment}
+                                    reference={currentPhrase.phrase}
                                     onRetry={handleRetry}
                                     onNext={() => navigate(1)}
                                 />

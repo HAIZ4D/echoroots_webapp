@@ -13,6 +13,7 @@ export async function transcribeAudio(audioBlob) {
 }
 
 /**
+ * @deprecated Use agenticTranslate instead.
  * Translate text from source language to English and Malay — via Cloud Function.
  */
 export async function translateText(text, sourceLang = 'indigenous') {
@@ -22,11 +23,32 @@ export async function translateText(text, sourceLang = 'indigenous') {
 }
 
 /**
+ * StoryWeaver multi-agent translate (literal → cultural annotator → back-translation validator).
+ * Returns { translations, validation, annotatedWords }.
+ */
+export async function agenticTranslate(text, sourceLang = 'indigenous') {
+    const fn = httpsCallable(functions, 'agenticTranslate', { timeout: 90000 })
+    const { data } = await fn({ text, sourceLang })
+    return data
+}
+
+/**
+ * @deprecated Use agenticSplitScenes instead.
  * Split a story into illustrated scenes — via Cloud Function.
  */
 export async function splitIntoScenes(storyText, englishTranslation, malayTranslation) {
     const fn = httpsCallable(functions, 'splitScenes', { timeout: 60000 })
     const { data } = await fn({ storyText, englishTranslation, malayTranslation })
+    return data
+}
+
+/**
+ * StoryWeaver multi-agent scene splitter (structure → excerpt validator → composer → sanitizer).
+ * Returns { scenes, warnings }.
+ */
+export async function agenticSplitScenes(storyText, englishTranslation, malayTranslation, language = 'indigenous') {
+    const fn = httpsCallable(functions, 'agenticSplitScenes', { timeout: 180000 })
+    const { data } = await fn({ storyText, englishTranslation, malayTranslation, language })
     return data
 }
 
@@ -58,6 +80,7 @@ export async function translateVocabulary(question) {
 }
 
 /**
+ * @deprecated Use orchestrateElderResponse instead.
  * Generate a RAG-grounded response — via Cloud Function.
  */
 export async function generateRAGResponse(question, contextDocs) {
@@ -67,6 +90,17 @@ export async function generateRAGResponse(question, contextDocs) {
 }
 
 /**
+ * Digital Elder multi-agent pipeline (router → retriever → grounder → validator → composer).
+ * Returns { answer, vocabTerms, sources, refused }.
+ */
+export async function orchestrateElderResponse(question) {
+    const fn = httpsCallable(functions, 'orchestrateElderResponse', { timeout: 90000 })
+    const { data } = await fn({ question })
+    return data
+}
+
+/**
+ * @deprecated Use agenticEvaluation instead.
  * Evaluate user pronunciation against a reference phrase — via Cloud Function.
  */
 export async function evaluatePronunciation(userAudioBlob, referencePhrase) {
@@ -74,6 +108,19 @@ export async function evaluatePronunciation(userAudioBlob, referencePhrase) {
     const mimeType = userAudioBlob.type || 'audio/webm'
     const fn = httpsCallable(functions, 'evaluatePronunciation', { timeout: 60000 })
     const { data } = await fn({ audioBase64, mimeType, referencePhrase })
+    return data
+}
+
+/**
+ * Pronunciation Lab multi-agent pipeline (transcriber → phonemeAligner → feedbackComposer).
+ * The score is deterministic (Levenshtein), not LLM-invented.
+ * Returns { score, transcribed, feedback, tips, alignment, asrConfidence, isSilence, isOffLanguage }.
+ */
+export async function agenticEvaluation(userAudioBlob, referencePhrase, language = 'indigenous') {
+    const audioBase64 = await blobToBase64(userAudioBlob)
+    const mimeType = userAudioBlob.type || 'audio/webm'
+    const fn = httpsCallable(functions, 'orchestrateEvaluation', { timeout: 60000 })
+    const { data } = await fn({ audioBase64, mimeType, referencePhrase, language })
     return data
 }
 

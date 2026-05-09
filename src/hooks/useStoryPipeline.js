@@ -25,6 +25,7 @@ export default function useStoryPipeline() {
                     scenes: result.scenes,
                     sceneCount: result.scenes?.length || 0,
                     metadata: result.metadata,
+                    validation: result.validation || null,
                     createdAt: new Date().toISOString(),
                 }
 

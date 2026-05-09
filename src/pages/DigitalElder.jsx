@@ -59,7 +59,13 @@ export default function DigitalElder() {
         setIsThinking(true)
         try {
             const result = await queryKnowledgeBase(question)
-            addChatMessage({ role: 'elder', text: result.answer, vocabTerms: result.vocabTerms, sources: result.sources })
+            addChatMessage({
+                role: 'elder',
+                text: result.answer,
+                vocabTerms: result.vocabTerms,
+                sources: result.sources,
+                refused: result.refused,
+            })
             scrollToBottom()
             if (avatarRef.current) {
                 try {

@@ -87,6 +87,7 @@ export default function StoryReaderOverlay({ story, onClose }) {
                     transcription={story.transcription}
                     language={story.language}
                     translations={story.translations}
+                    validation={story.validation}
                 />
             </motion.div>
         </motion.div>

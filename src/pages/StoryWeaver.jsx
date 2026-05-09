@@ -598,6 +598,7 @@ function CreateSection({ pipeline, isProcessing, showEBook, onRecordingComplete,
                             transcription={pipeline.transcription}
                             language={pipeline.language}
                             translations={pipeline.translations}
+                            validation={pipeline.validation}
                         />
                     </motion.div>
                 </motion.div>

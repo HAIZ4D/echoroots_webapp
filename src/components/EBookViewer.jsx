@@ -1,9 +1,116 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Volume2, Globe, Sparkles, BookOpen, BookMarked } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Volume2, Globe, Sparkles, BookOpen, BookMarked, ShieldCheck, ShieldAlert, Wrench } from 'lucide-react'
 import AudioPlayer from './AudioPlayer'
 
-export default function EBookViewer({ scenes, transcription, language, translations }) {
+// Translation-fidelity badge derived from agenticTranslate's back-translation validator.
+// pass = green, warn = amber, fail = red. Hidden when no validation data (legacy stories).
+function TranslationFidelityBadge({ validation }) {
+    if (!validation?.translation) return null
+    const { verdict, similarity } = validation.translation
+    const pct = Math.round((similarity || 0) * 100)
+    const palette =
+        verdict === 'pass'
+            ? { bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.35)', fg: '#34d399', label: 'Translation verified' }
+            : verdict === 'warn'
+                ? { bg: 'rgba(200,164,92,0.1)', border: 'rgba(200,164,92,0.4)', fg: '#c8a45c', label: 'Translation partially verified' }
+                : { bg: 'rgba(251,113,133,0.1)', border: 'rgba(251,113,133,0.4)', fg: '#fb7185', label: 'Translation may be inaccurate' }
+    const Icon = verdict === 'pass' ? ShieldCheck : ShieldAlert
+    return (
+        <div
+            title={
+                validation.translation.divergences?.length
+                    ? `Divergences: ${validation.translation.divergences.join('; ')}`
+                    : `Back-translation similarity: ${pct}%`
+            }
+            style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                padding: '4px 10px', borderRadius: '99px',
+                background: palette.bg, border: `1px solid ${palette.border}`,
+                fontSize: '10px', fontWeight: 600, letterSpacing: '0.04em', color: palette.fg,
+                fontFamily: 'var(--font-mono)',
+            }}
+        >
+            <Icon size={11} />
+            <span>{palette.label}</span>
+            <span style={{ opacity: 0.55 }}>·</span>
+            <span>{pct}%</span>
+        </div>
+    )
+}
+
+// Per-scene warning chips: scene auto-repair + image prompt sanitization.
+function SceneAgentNotes({ scene }) {
+    const sanitized = Array.isArray(scene.sanitizerRemovedTerms) ? scene.sanitizerRemovedTerms : []
+    const repaired = scene.repairWarning
+    if (sanitized.length === 0 && !repaired) return null
+    return (
+        <div style={{
+            margin: '0 28px 18px', padding: '10px 14px', borderRadius: '12px',
+            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+            display: 'flex', flexDirection: 'column', gap: '8px',
+        }}>
+            <div style={{
+                fontSize: '9px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase',
+                color: 'var(--text-secondary)', opacity: 0.5,
+            }}>
+                Agent Notes
+            </div>
+            {repaired && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                    <Wrench size={11} style={{ color: '#c8a45c', flexShrink: 0 }} />
+                    <span>Scene auto-repaired by excerpt validator</span>
+                </div>
+            )}
+            {sanitized.length > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                    <ShieldCheck size={11} style={{ color: '#34d399', flexShrink: 0 }} />
+                    <span style={{ marginRight: '4px' }}>Image prompt sanitised — removed:</span>
+                    {sanitized.map((term) => (
+                        <span key={term} style={{
+                            padding: '2px 8px', borderRadius: '99px',
+                            background: 'rgba(251,113,133,0.08)', border: '1px solid rgba(251,113,133,0.25)',
+                            color: '#fb7185', fontFamily: 'var(--font-mono)', fontSize: '10px',
+                        }}>
+                            {term}
+                        </span>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+// Annotated-words footer: shows words the cultural annotator confirmed.
+function AnnotatedWordsFooter({ validation }) {
+    const words = validation?.annotatedWords || []
+    if (words.length === 0) return null
+    return (
+        <div style={{
+            margin: '0 28px 24px', padding: '12px 16px', borderRadius: '12px',
+            background: 'rgba(200,164,92,0.04)', border: '1px solid rgba(200,164,92,0.16)',
+            display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px',
+        }}>
+            <span style={{
+                fontSize: '9px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase',
+                color: '#c8a45c', opacity: 0.7,
+            }}>
+                Cultural terms
+            </span>
+            {words.map((w) => (
+                <span key={w} style={{
+                    fontSize: '11px', padding: '3px 10px', borderRadius: '99px',
+                    background: 'rgba(200,164,92,0.08)', border: '1px solid rgba(200,164,92,0.22)',
+                    color: '#e8d5a3', fontFamily: 'var(--font-mono)',
+                }}>
+                    {w}
+                </span>
+            ))}
+        </div>
+    )
+}
+
+export default function EBookViewer({ scenes, transcription, language, translations, validation }) {
     const [currentPage, setCurrentPage] = useState(0)
     if (!scenes || scenes.length === 0) return null
 
@@ -48,30 +155,35 @@ export default function EBookViewer({ scenes, transcription, language, translati
                     </div>
                 </div>
 
-                {/* Pill progress dots */}
-                {totalPages > 1 && (
-                    <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                        {scenes.map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setCurrentPage(i)}
-                                style={{
-                                    width: i === currentPage ? '22px' : '6px',
-                                    height: '6px',
-                                    borderRadius: '3px',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    padding: 0,
-                                    transition: 'all 0.35s cubic-bezier(0.22,1,0.36,1)',
-                                    background: i === currentPage
-                                        ? 'linear-gradient(90deg, #e8c470, #c8a45c)'
-                                        : 'rgba(255,255,255,0.18)',
-                                }}
-                                aria-label={`Scene ${i + 1}`}
-                            />
-                        ))}
-                    </div>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {/* Translation fidelity badge — only when validation present */}
+                    <TranslationFidelityBadge validation={validation} />
+
+                    {/* Pill progress dots */}
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                            {scenes.map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i)}
+                                    style={{
+                                        width: i === currentPage ? '22px' : '6px',
+                                        height: '6px',
+                                        borderRadius: '3px',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        padding: 0,
+                                        transition: 'all 0.35s cubic-bezier(0.22,1,0.36,1)',
+                                        background: i === currentPage
+                                            ? 'linear-gradient(90deg, #e8c470, #c8a45c)'
+                                            : 'rgba(255,255,255,0.18)',
+                                    }}
+                                    aria-label={`Scene ${i + 1}`}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* ── Scrollable Page Content ── */}
@@ -207,6 +319,9 @@ export default function EBookViewer({ scenes, transcription, language, translati
                             </div>
                         </div>
 
+                        {/* ── Per-scene agent notes (sanitizer + repair warnings) ── */}
+                        <SceneAgentNotes scene={scene} />
+
                         {/* ── Cultural Note ── */}
                         {scene.culturalNote && (
                             <motion.div
@@ -242,6 +357,9 @@ export default function EBookViewer({ scenes, transcription, language, translati
                         )}
                     </motion.div>
                 </AnimatePresence>
+
+                {/* ── Story-level annotated words footer (once, not per-page) ── */}
+                <AnnotatedWordsFooter validation={validation} />
             </div>
 
             {/* ── Navigation Footer ── */}

@@ -4,8 +4,13 @@ import { motion } from 'framer-motion'
 import { Volume2, Square, BookOpen } from 'lucide-react'
 
 export default function ChatBubble({ message, onSpeak, isSpeaking }) {
-    const { role, text, vocabTerms, sources, timestamp } = message
+    const { role, text, vocabTerms, sources, timestamp, refused } = message
     const isElder = role === 'elder'
+
+    // Tribe attributions for the citation footer (deduplicated, max 2 shown)
+    const tribeChips = Array.isArray(sources) && sources.length > 0
+        ? Array.from(new Set(sources.map((s) => s.tribe).filter(Boolean))).slice(0, 2)
+        : []
 
     const segments = parseVocabTerms(text)
     const cleanText = text.replace(/\[([^\]|]+)\|[^\]]+\]/g, '$1')
@@ -91,11 +96,15 @@ export default function ChatBubble({ message, onSpeak, isSpeaking }) {
                     position: 'relative',
                     overflow: 'hidden',
                     borderRadius: isElder ? '4px 18px 18px 18px' : '18px 4px 18px 18px',
-                    ...(isElder ? {
+                    ...(isElder ? (refused ? {
+                        background: 'linear-gradient(145deg, rgba(15,28,18,0.78) 0%, rgba(10,20,14,0.88) 100%)',
+                        border: '1px dashed rgba(200,164,92,0.18)',
+                        boxShadow: '0 2px 14px rgba(0,0,0,0.25)',
+                    } : {
                         background: 'linear-gradient(145deg, rgba(19,46,27,0.88) 0%, rgba(11,30,18,0.94) 100%)',
                         border: '1px solid rgba(200,164,92,0.16)',
                         boxShadow: '0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(200,164,92,0.06)',
-                    } : {
+                    }) : {
                         background: 'linear-gradient(145deg, rgba(0,229,160,0.1) 0%, rgba(0,179,125,0.05) 100%)',
                         border: '1px solid rgba(0,229,160,0.18)',
                         boxShadow: '0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(0,229,160,0.07)',
@@ -127,8 +136,11 @@ export default function ChatBubble({ message, onSpeak, isSpeaking }) {
                     <div style={{
                         fontSize: '13.5px',
                         lineHeight: 1.68,
-                        color: isElder ? 'rgba(232,228,218,0.88)' : 'var(--text-primary)',
+                        color: isElder
+                            ? (refused ? 'rgba(232,228,218,0.62)' : 'rgba(232,228,218,0.88)')
+                            : 'var(--text-primary)',
                         paddingLeft: isElder ? '8px' : '0',
+                        fontStyle: refused ? 'italic' : 'normal',
                     }}>
                         {segments.map((seg, i) =>
                             seg.type === 'vocab' ? (
@@ -177,14 +189,15 @@ export default function ChatBubble({ message, onSpeak, isSpeaking }) {
                         </div>
                     )}
 
-                    {/* Sources badge */}
-                    {sources && sources.length > 0 && (
+                    {/* Sources badge — tribe attribution for grounded answers */}
+                    {!refused && sources && sources.length > 0 && (
                         <div style={{
                             marginTop: '9px',
                             paddingLeft: isElder ? '8px' : '0',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '5px',
+                            gap: '6px',
+                            flexWrap: 'wrap',
                         }}>
                             <div style={{
                                 width: '4px', height: '4px', borderRadius: '50%',
@@ -197,7 +210,52 @@ export default function ChatBubble({ message, onSpeak, isSpeaking }) {
                                 fontFamily: 'var(--font-mono)',
                                 letterSpacing: '0.03em',
                             }}>
-                                {sources.length} cultural source{sources.length > 1 ? 's' : ''}
+                                Source:
+                            </span>
+                            {tribeChips.length > 0 ? (
+                                tribeChips.map((tribe) => (
+                                    <span key={tribe} style={{
+                                        fontSize: '10px',
+                                        padding: '2px 7px',
+                                        borderRadius: '10px',
+                                        background: 'rgba(200,164,92,0.08)',
+                                        border: '1px solid rgba(200,164,92,0.2)',
+                                        color: 'rgba(200,164,92,0.78)',
+                                        fontFamily: 'var(--font-mono)',
+                                        letterSpacing: '0.04em',
+                                    }}>
+                                        {tribe} tradition
+                                    </span>
+                                ))
+                            ) : (
+                                <span style={{
+                                    fontSize: '10px',
+                                    color: 'rgba(200,164,92,0.55)',
+                                    fontFamily: 'var(--font-mono)',
+                                }}>
+                                    {sources.length} cultural source{sources.length > 1 ? 's' : ''}
+                                </span>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Refused footer — soft elder tag */}
+                    {refused && isElder && (
+                        <div style={{
+                            marginTop: '9px',
+                            paddingLeft: isElder ? '8px' : '0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                        }}>
+                            <span style={{ fontSize: '11px', opacity: 0.55 }}>🍃</span>
+                            <span style={{
+                                fontSize: '10px',
+                                color: 'rgba(200,164,92,0.45)',
+                                fontFamily: 'var(--font-mono)',
+                                letterSpacing: '0.05em',
+                            }}>
+                                Awaiting elder wisdom
                             </span>
                         </div>
                     )}

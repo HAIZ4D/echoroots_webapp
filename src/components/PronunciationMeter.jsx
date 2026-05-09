@@ -1,5 +1,121 @@
 import { motion } from 'framer-motion'
-import { RotateCcw, ChevronRight, Lightbulb } from 'lucide-react'
+import { RotateCcw, ChevronRight, Lightbulb, Target } from 'lucide-react'
+
+// Renders the deterministic char-level alignment from phonemeAligner.
+// Each op is one of: match | sub | delete (missing) | insert (extra).
+function AlignmentDiff({ alignment, reference }) {
+    if (!alignment || !Array.isArray(alignment.ops) || alignment.ops.length === 0) return null
+
+    const styleFor = (type) => {
+        switch (type) {
+            case 'match':
+                return { color: '#34d399', background: 'transparent' }
+            case 'sub':
+                return { color: '#fb7185', background: 'rgba(251,113,133,0.12)', textDecoration: 'underline', textDecorationColor: 'rgba(251,113,133,0.6)' }
+            case 'delete':
+                return { color: '#fb7185', background: 'rgba(251,113,133,0.18)', textDecoration: 'line-through' }
+            case 'insert':
+                return { color: '#f59e0b', background: 'rgba(245,158,11,0.16)' }
+            default:
+                return {}
+        }
+    }
+
+    return (
+        <div style={{
+            marginBottom: '18px',
+            padding: '14px 16px',
+            borderRadius: '12px',
+            background: 'rgba(255,255,255,0.025)',
+            border: '1px solid rgba(255,255,255,0.07)',
+        }}>
+            <div style={{
+                display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px',
+                fontSize: '9px', fontFamily: 'var(--font-mono)', letterSpacing: '0.18em',
+                textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)',
+            }}>
+                <Target size={11} />
+                Char-level alignment
+            </div>
+
+            {/* Two rows: reference (target) and what was heard, char-aligned */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '15px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '9px', minWidth: '50px', color: 'rgba(200,164,92,0.55)', letterSpacing: '0.1em' }}>TARGET</span>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1px' }}>
+                        {alignment.ops.map((op, i) => {
+                            const ch = op.ref ?? ' '
+                            const visible = op.type === 'insert' ? '·' : (ch === ' ' ? ' ' : ch)
+                            return (
+                                <span key={`r${i}`} style={{
+                                    padding: '1px 3px', borderRadius: '3px',
+                                    ...(op.type === 'insert'
+                                        ? { color: 'rgba(255,255,255,0.2)' }
+                                        : op.type === 'match'
+                                            ? { color: 'rgba(232,228,218,0.85)' }
+                                            : styleFor(op.type === 'sub' ? 'sub' : 'delete')),
+                                }}>
+                                    {visible}
+                                </span>
+                            )
+                        })}
+                    </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '9px', minWidth: '50px', color: 'rgba(0,229,160,0.55)', letterSpacing: '0.1em' }}>HEARD</span>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1px' }}>
+                        {alignment.ops.map((op, i) => {
+                            const ch = op.got ?? ' '
+                            const visible = op.type === 'delete' ? '·' : (ch === ' ' ? ' ' : ch)
+                            return (
+                                <span key={`g${i}`} style={{
+                                    padding: '1px 3px', borderRadius: '3px',
+                                    ...(op.type === 'delete'
+                                        ? { color: 'rgba(255,255,255,0.2)' }
+                                        : op.type === 'match'
+                                            ? { color: 'rgba(232,228,218,0.85)' }
+                                            : styleFor(op.type === 'sub' ? 'sub' : 'insert')),
+                                }}>
+                                    {visible}
+                                </span>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            {/* Compact summary */}
+            {(alignment.summary?.substitutions > 0 || alignment.summary?.deletions > 0 || alignment.summary?.insertions > 0) && (
+                <div style={{
+                    marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '6px',
+                    fontFamily: 'var(--font-mono)', fontSize: '10px',
+                }}>
+                    {alignment.summary.substitutions > 0 && (
+                        <span style={{ padding: '2px 8px', borderRadius: '99px', background: 'rgba(251,113,133,0.1)', color: '#fb7185', border: '1px solid rgba(251,113,133,0.25)' }}>
+                            {alignment.summary.substitutions} wrong
+                        </span>
+                    )}
+                    {alignment.summary.deletions > 0 && (
+                        <span style={{ padding: '2px 8px', borderRadius: '99px', background: 'rgba(251,113,133,0.1)', color: '#fb7185', border: '1px solid rgba(251,113,133,0.25)' }}>
+                            {alignment.summary.deletions} missing
+                        </span>
+                    )}
+                    {alignment.summary.insertions > 0 && (
+                        <span style={{ padding: '2px 8px', borderRadius: '99px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.25)' }}>
+                            {alignment.summary.insertions} extra
+                        </span>
+                    )}
+                </div>
+            )}
+            {/* Reference shown literally (helps when target has uppercase/punct stripped from alignment) */}
+            {reference && (
+                <div style={{ marginTop: '10px', fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-mono)' }}>
+                    Phrase: <span style={{ color: 'rgba(232,228,218,0.7)' }}>{reference}</span>
+                </div>
+            )}
+        </div>
+    )
+}
 
 const SEGMENTS = 24
 
@@ -18,7 +134,7 @@ function getRating(score) {
     return { label: 'Keep Trying', color: '#ef4444' }
 }
 
-export default function PronunciationMeter({ score = 0, transcribed, feedback, tips = [], onRetry, onNext }) {
+export default function PronunciationMeter({ score = 0, transcribed, feedback, tips = [], alignment, reference, onRetry, onNext }) {
     const normalizedScore = Math.min(Math.max(score, 0), 100)
     const filledCount = Math.round((normalizedScore / 100) * SEGMENTS)
     const { label, color } = getRating(normalizedScore)
@@ -148,6 +264,9 @@ export default function PronunciationMeter({ score = 0, transcribed, feedback, t
                     </span>
                 </div>
             )}
+
+            {/* Char-level alignment — only when the agent pipeline supplied it */}
+            <AlignmentDiff alignment={alignment} reference={reference} />
 
             {/* Feedback */}
             {feedback && (
