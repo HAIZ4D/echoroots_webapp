@@ -456,9 +456,32 @@ firebase deploy --only hosting   # → https://your-project.web.app
 
 ## 🤖 AI Disclosure
 
-EchoRoots is an AI-assisted application. Below is a complete disclosure of every AI system in use, in line with the hackathon's transparency requirements.
+EchoRoots is an AI-assisted application. Below is a complete disclosure structured against the four bullets of the Borneo HackWKND **AI Transparency Requirement**:
 
-### Google Gemini 2.5 Flash *(server-side via Cloud Functions)*
+> *AI tools/platforms used · AI-generated components · Custom engineering done by team members · Models/APIs integrated*
+
+We split the disclosure into **two distinct categories** because they serve different evaluation questions:
+
+- **🛠 Build-time AI** — tools used by the team *to develop* the product (during the hackathon)
+- **⚡ Run-time AI** — models running *inside* the live product (in the hands of users)
+
+---
+
+### 🛠 Build-Time AI Tools *(used by the team to develop EchoRoots)*
+
+| Tool | Role |
+|---|---|
+| **Anthropic Claude** | Software development, debugging, multi-agent architecture planning, API integration, code review |
+| **Google NotebookLM** | Research extraction and summarisation from anthropological / linguistic papers and source PDFs |
+| **OpenAI ChatGPT** | Brainstorming, concept refinement, documentation polish |
+
+These tools assisted development; **none of them run inside the deployed product**.
+
+---
+
+### ⚡ Run-Time Models / APIs Integrated *(active in the live product)*
+
+#### Google Gemini 2.5 Flash *(server-side via Cloud Functions)*
 
 | Task | Used By |
 |---|---|
@@ -471,34 +494,79 @@ EchoRoots is an AI-assisted application. Below is a complete disclosure of every
 | Vocabulary translation fallback | Snap & Learn |
 | Validator second-opinion | Digital Elder, StoryWeaver |
 
-### Google Imagen 4 *(Imagen 4 Fast → Imagen 4 Full fallback)*
+#### Google Imagen 4 *(Imagen 4 Fast → Imagen 4 Full fallback chain)*
 
 - **Scene illustrations** for StoryWeaver — watercolor-style artwork generated per scene
 - 2-provider fallback chain to handle rate limits and quota exhaustion gracefully
 
-### Google Cloud Text-to-Speech *(Neural2 voice)*
+#### Google Cloud Text-to-Speech *(Neural2 voice)*
 
 - **Scene narration** for StoryWeaver
 - **Vocabulary playback** for Snap & Learn and Pronunciation Lab
 - **Per-word avatar lip-sync** for Digital Elder via `v1beta1` + SSML mark timepoints
 
-### TalkingHead.js + Three.js
+#### TalkingHead.js + Three.js
 
 - **3D Digital Elder avatar** — WebGL-rendered VRoid model with custom bone mapping. Lip-sync driven by per-word timing arrays from Cloud TTS.
 
-### Firebase Cloud Functions (Node.js 20)
+#### Firebase Cloud Functions (Node.js 20)
 
 - **API proxy + agent orchestration** — All AI calls are routed through Cloud Functions; API keys live in Secret Manager and never reach the browser.
 
-### Deterministic / Non-AI Components
+---
 
-- **Levenshtein edit distance** (Pronunciation Lab phonemeAligner) — pronunciation score is **not** LLM-invented
-- **Regex citation checks** (StoryWeaver sceneExcerptValidator, Digital Elder validator) — verifies excerpts and vocab terms appear literally in source
-- **Dictionary lookup** (Snap & Learn vocabTranslator) — short-circuits the LLM for verified words
-- **Image prompt denylist** (StoryWeaver promptSanitizer) — strips invented cultural specifics
-- **Web Audio API** — real-time waveform + RMS speech-presence detection (no AI)
+### 🤖 AI-Generated Components *(in the shipped product)*
 
-> **Anti-hallucination guarantee:** Every orchestrator has an explicit `refused: true` path. Where the system has no verified knowledge, it returns a culturally-appropriate refusal message rather than fabricating an indigenous word, a cultural fact, or a cultural illustration detail.
+Every piece of AI-generated content is **clearly labelled to the user** wherever cultural accuracy is at stake.
+
+| Component | Generator | User-Facing Label |
+|---|---|---|
+| Storybook scene illustrations | Imagen 4 (watercolor style) | Implicit (illustrative art, not factual content) |
+| Scene narration audio | Cloud TTS Neural2-F | Implicit (audio playback) |
+| Storybook scene splits + cultural annotations | Gemini 2.5 Flash | Validated by back-translation agent before display |
+| Snap & Learn LLM-fallback translations | Gemini 2.5 Flash | **Yellow "AI suggestion" badge** + disclaimer "please verify with a native speaker" |
+| Digital Elder responses | Gemini 2.5 Flash | Refuses if not grounded in retrieved KB; gold-highlighted vocab is regex-verified to exist literally in source docs |
+| Pronunciation feedback text | Gemini 2.5 Flash | The numerical **score** is NOT generated — it's deterministic Levenshtein. The LLM only describes *why*. |
+
+---
+
+### 👤 Custom Engineering by Team Members *(human-designed, not AI-generated)*
+
+The architecture, dataset curation, and UX decisions below are the team's own work:
+
+#### Architecture & System Design
+- **17-agent orchestration system** across 5 orchestrators — the decomposition itself is a deliberate design choice, not a generated artefact
+- **Refusal-as-first-class contract** — every orchestrator has a typed `refused: true` path; this is a cultural-safety design decision
+- **Two-key Google auth architecture** — separating AI Studio (Gemini) from Cloud Console (Cloud TTS) credentials, both held in Firebase Secret Manager
+- **Cloud Function proxy security model** — browser never holds AI credentials
+- **Hybrid deterministic + LLM pipeline** design
+
+#### Deterministic Logic *(no AI involved at runtime)*
+- **Levenshtein edit-distance pronunciation scoring** (Pronunciation Lab phonemeAligner) — score is provably reproducible, not LLM-invented
+- **Regex citation validation** (StoryWeaver sceneExcerptValidator, Digital Elder validator) — verifies generator output appears literally in source
+- **Dictionary-first lookup tier** (Snap & Learn vocabTranslator) — short-circuits ~80% of vocab requests with zero LLM calls
+- **Image-prompt denylist sanitisation** (StoryWeaver promptSanitizer) — strips invented cultural specifics
+- **Web Audio API + RMS amplitude** speech-presence detection
+- **Multi-word fallback** in vocabulary lookup ("water bottle" → "bottle")
+
+#### Curated Datasets *(human-researched, not AI-generated)*
+- **98-entry Orang Asli RAG knowledge base** ([src/data/seedKnowledge.json](src/data/seedKnowledge.json)) — sourced from anthropological / linguistic research; covers Semai, Temiar, Jakun, Batek, Mah Meri, Che Wong
+- **~95-entry verified vocabulary dictionary** ([functions/agents/vision/vocabulary.json](functions/agents/vision/vocabulary.json)) across 14 ASEAN languages — sourced from research PDFs and verified content
+- **10 phonetic phrases** in the Pronunciation Lab — phonetic guides authored by the team
+
+#### Frontend, Integration & UX
+- React 19 + Vite 7 application architecture, routing, Zustand state design
+- Camera UI (rear-facing, plain-background hint, capture/refused/result states)
+- Grouped 14-language dropdown organised by ASEAN region
+- Verified vs AI-suggested badge UX in Snap & Learn
+- E-book viewer, story library, story reader overlay
+- WebGL avatar integration — `useRef` (not `useState`) to avoid React closure trap; explicit dispose lifecycle
+- Per-word SSML mark → TalkingHead.js lip-sync integration
+- Cloud TTS → browser SpeechSynthesis fallback chain with female-voice picker
+- Imagen 4 Fast → Imagen 4 Full provider fallback chain
+- Tailwind v4 + custom CSS theming
+
+> **Anti-hallucination guarantee:** Every orchestrator has an explicit `refused: true` path. Where the system has no verified knowledge, it returns a culturally-appropriate refusal message rather than fabricating an indigenous word, a cultural fact, or a cultural illustration detail. **Wrong words taught to learners cause real cultural harm — fail-closed validation is a cultural duty, not just a UX nicety.**
 
 ---
 
